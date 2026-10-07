@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Copy the Gene: Race + Duel</title>
+<style>
+:root{--bg:#fff8ec;--ink:#1d2a4a;--card:#fff;--line:#1d2a4a;--yel:#ffc83d;--cor:#ff6b57;--mint:#5fd3a6;--sky:#8cc8ff;--mut:#5b6785;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a30;--ink:#fff4dc;--card:#1c2745;--line:#fff4dc;--mut:#a9b3d1}}
+:root[data-theme="dark"]{--bg:#121a30;--ink:#fff4dc;--card:#1c2745;--line:#fff4dc;--mut:#a9b3d1}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;line-height:1.45;font-size:16px}
+main{max-width:520px;margin:0 auto;padding:14px 14px 50px}
+.hud{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:10px;gap:8px}
+.hud span{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:4px 12px;white-space:nowrap}
+.card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:18px;box-shadow:6px 6px 0 var(--line)}
+.hero{background:var(--yel);color:#1d2a4a}
+h1{font-size:2.2rem;line-height:1.05;margin:0 0 8px;letter-spacing:-.02em}
+h2{margin:0 0 6px;font-size:1.3rem}
+p{margin:6px 0}
+.bar{height:10px;background:rgba(128,128,128,.25);border-radius:9px;overflow:hidden;margin:0 0 12px}
+.bar i{display:block;height:100%;background:var(--cor);transition:width .3s}
+.btn{font:inherit;font-weight:800;color:#1d2a4a;background:var(--yel);border:3px solid var(--line);border-radius:14px;padding:11px 20px;cursor:pointer;box-shadow:3px 3px 0 var(--line)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+button:focus-visible{outline:3px solid var(--cor);outline-offset:2px}
+.opt{display:block;width:100%;text-align:left;font:inherit;font-weight:600;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer}
+.opt.ok{background:var(--mint);color:#10301f}
+.opt.no{background:var(--cor);color:#2a0a05}
+.q{font-weight:800;font-size:1.15rem;margin:8px 0}
+.fb{min-height:3em;font-weight:600;margin:8px 0}
+.strand{display:flex;gap:5px;justify-content:center;flex-wrap:wrap;margin:10px 0}
+.b{width:38px;height:44px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:1.15rem;border:2px solid var(--line);border-radius:10px;background:var(--sky);color:#10243f}
+.b.r{background:var(--card);color:var(--ink);border-style:dashed}
+.b.r.f{background:var(--mint);color:#10301f;border-style:solid}
+.b.r.x{background:var(--cor);color:#2a0a05;border-style:solid}
+.ends{display:flex;justify-content:space-between;color:var(--mut);font-size:.85rem;font-weight:700}
+.pad{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+.pad .btn{padding:14px 0;font-size:1.3rem}
+.big{font-size:2.6rem;font-weight:800;margin:0}
+.pop{animation:pop .25s}
+@keyframes pop{50%{transform:scale(1.04)}}
+@media (prefers-reduced-motion:reduce){.pop{animation:none}.bar i{transition:none}}
+.tbar{height:12px;background:rgba(128,128,128,.25);border-radius:9px;overflow:hidden;border:2px solid var(--line)}
+.tbar i{display:block;height:100%;width:100%;background:var(--mint)}
+.tc{text-align:right;font-weight:800;font-size:.9rem;margin:2px 0 6px}
+.lb{margin-top:18px}
+.lb ol{list-style:none;margin:8px 0 0;padding:0}
+.lb li{display:flex;justify-content:space-between;gap:8px;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:700}
+.lb li.me{background:var(--yel);color:#1d2a4a}
+.lb li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.opp{background:var(--sky);color:#10243f;border:2px solid var(--line);border-radius:12px;padding:6px 12px;margin-bottom:10px;font-weight:700;font-size:.9rem}
+input{font:inherit;font-weight:800;text-transform:uppercase;letter-spacing:.2em;text-align:center;width:6.5em;padding:10px;border:3px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin-right:8px}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.code{font-size:2.4rem;font-weight:800;letter-spacing:.25em}
+.lb li small{font-weight:600;opacity:.7;margin-left:6px}
+</style>
+</head>
+<body>
+<main>
+<div class="hud" id="hud" hidden><span id="hh"></span><span id="ss"></span><span id="st"></span></div>
+<div class="opp" id="op" hidden></div>
+<div class="card" id="g"></div>
+</main>
+<script>
+var g=document.getElementById("g"),hud=document.getElementById("hud"),OP=document.getElementById("op");
+var MODE="solo",ROOM=null,RM=null,PH="",CODE="",rnd=Math.random,myReady=false,onm={};
+var hearts,score,streak,si,qi,locked,seq,pos,pb=0,tmr=null,tl=0,tt=1,DB=null,USER=null,ME=null,rows=[],names={};
+try{pb=+localStorage.getItem("ctg_pb")||0}catch(e){}
+var COMP={A:"U",T:"A",G:"C",C:"G"};
+var S=[
+{n:"Stage 1: The Photocopier",d:"Copy the DNA template into mRNA. Tap the matching RNA base for each letter (A→U, T→A, G→C, C→G). RNA has no T!",t:"build",rounds:3},
+{n:"Stage 2: Who Makes What?",d:"Three polymerases, three jobs. Pick the right one.",t:"mc",q:[
+["Makes mRNA in eukaryotes",["Pol I","Pol II","Pol III"],1,"Pol II = mRNA, and it recognizes promoters."],
+["Makes tRNA",["Pol III","Pol II","Pol I"],0,"Pol III = tRNA + 5S rRNA + small RNAs."],
+["Makes the 28S, 18S and 5.8S rRNAs",["Pol III","Pol I","Pol II"],1,"Pol I = large rRNAs."],
+["Makes 5S rRNA",["Pol I","Pol II","Pol III"],2,"5S rRNA is the odd one out: Pol III."]]},
+{n:"Stage 3: Bacteria Blitz",d:"Prokaryote transcription. Quick, who does the job?",t:"mc",q:[
+["Finds the promoter",["β′","σ (sigma)","ω"],1,"Sigma = the GPS."],
+["Catalytic subunit that builds RNA 5′→3′",["β","α","σ"],0,"β is the builder."],
+["Grips the DNA template",["β′","α","ρ"],0,"β′ binds the DNA template."],
+["The −10 box sequence is called...",["Hogness box","Pribnow box","CAAT box"],1,"Pribnow (TATAAT). Hogness is the eukaryotic TATA box."],
+["Needs a GC-rich hairpin to stop transcription",["ρ-dependent","Intrinsic (ρ-independent)","Rifampin"],1,"Palindrome DNA → hairpin RNA → polymerase stalls."],
+["Uses ATP to pull RNA and polymerase off DNA",["Rho factor","Sigma factor","TFIID"],0,"Rho = the referee."]]},
+{n:"Stage 4: Eukaryote Maze",d:"Initiation in eukaryotes and the RNA makeover.",t:"mc",q:[
+["First factor to bind the TATA box",["TFIIH","TFIID","TFIIB"],1,"TFIID lands first, then the PIC assembles."],
+["The helicase that unwinds DNA in the PIC",["TFIIH","TFIID","Rho"],0,"TFIIH = helicase."],
+["7-methylguanosine cap belongs to...",["tRNA","mRNA","rRNA"],1,"The 5′ cap + poly-A tail = mRNA."],
+["CCA is added to the 3′ end of...",["mRNA","rRNA","tRNA"],2,"CCA addition = tRNA makeover."],
+["45S precursor is cut into 18S, 5.8S, 28S",["rRNA","mRNA","tRNA"],0,"45S → rRNAs, then ribosome assembly."],
+["Alternative splicing gives you...",["More introns","Many proteins from one gene","A longer poly-A tail"],1,"Different exon combos = protein diversity."]]},
+{n:"Boss: Dr. Inhibitor",d:"The boss attacks with antibiotics. Answer fast, no mistakes!",t:"mc",q:[
+["Treats TB by binding β of bacterial RNAP",["Rifampin","Actinomycin D","Penicillin"],0,"Rifampin blocks incoming nucleotides at initiation."],
+["Binds tightly to the DNA template and blocks polymerase movement",["Rifampin","Actinomycin D","Rifampin + σ"],1,"Actinomycin D stops elongation."],
+["Which one also works in eukaryotes?",["Rifampin","Actinomycin D","Neither"],1,"Actinomycin D hits both, Rifampin is bacterial only."],
+["Enhancers bind...",["Activator proteins (TFs, steroid hormones)","Rho factor","Spliceosomes"],0,"Enhancers can sit upstream OR downstream and boost transcription."]]}
+];
+S[1].sec=10;S[2].sec=9;S[3].sec=9;S[4].sec=6;
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function shuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(rnd()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function stopT(){clearInterval(tmr);tmr=null}
+function startT(sec,end){stopT();tt=sec;tl=sec;tmr=setInterval(function(){tl-=.1;var b=document.getElementById("tb"),c=document.getElementById("tc");
+ if(b){b.style.width=Math.max(0,tl/tt*100)+"%";b.style.background=tl/tt<.3?"var(--cor)":"var(--mint)"}
+ if(c)c.textContent="⏱ "+Math.max(0,Math.ceil(tl))+"s";
+ if(tl<=0){stopT();end()}},100)}
+function tbar(){return '<div class="tbar"><i id="tb"></i></div><div class="tc" id="tc"></div>'}
+function hudUp(){hud.hidden=false;if(MODE==="duel"&&ROOM&&PH==="play")ROOM.presence({score:score,hearts:Math.max(hearts,0),st:si}).catch(function(){});document.getElementById("hh").textContent="❤️".repeat(Math.max(hearts,0))+"🖤".repeat(3-Math.max(hearts,0));document.getElementById("ss").textContent="⭐ "+score;document.getElementById("st").textContent="🔥 "+streak}
+function drawLB(){var el=document.getElementById("lb");if(!el)return;
+ var h='<p><b>Your best: '+pb+'</b></p>';
+ if(DB){h+='<h2>🏆 Players ('+rows.length+')</h2>';
+  if(!rows.length)h+='<p>No scores yet. Be the first!</p>';
+  else{h+='<ol>';rows.forEach(function(r,i){var n=(names[r.id]&&names[r.id].name)||"Player";var m=["🥇","🥈","🥉"][i]||(i+1)+".";
+   h+='<li class="'+(r.id===ME?"me":"")+'"><span>'+m+" "+esc(n)+(r.id===ME?" (you)":"")+'</span><span>'+r.best+'<small>×'+r.runs+'</small></span></li>'});h+='</ol>'}}
+ el.innerHTML=h}
+function resolveNames(){if(USER&&rows.length){USER.profiles(rows.map(function(r){return r.id})).then(function(p){names=p||{};drawLB()}).catch(drawLB)}else drawLB()}
+function finish(){stopT();if(MODE==="duel")return;if(score>pb){pb=score;try{localStorage.setItem("ctg_pb",pb)}catch(e){}}
+ if(DB&&ME){var ref=DB.collection("lb").doc(ME);ref.get().then(function(d){var o=d.exists?d.data():null;return ref.set({best:Math.max(score,o?o.best:0),runs:(o&&o.runs||0)+1,hearts:Math.max(hearts,0),stage:Math.min(si+1,S.length),t:Date.now()})}).catch(function(){})}}
+function title(){
+ stopT();hud.hidden=true;OP.hidden=true;PH="";MODE="solo";rnd=Math.random;myReady=false;if(ROOM){ROOM.leave().catch(function(){});ROOM=null}g.className="card hero";
+ g.innerHTML='<h1>Copy the Gene ⏱</h1><p>Every answer is on the clock. Faster = more points. 5 stages, 3 hearts. Time out = lose a heart.</p><div class="row"><button class="btn" id="go">Solo race</button><button class="btn" id="dl">⚔️ 1v1 duel</button></div><div class="lb" id="lb"></div>';
+ document.getElementById("go").onclick=function(){hearts=3;score=0;streak=0;si=0;intro()};document.getElementById("dl").onclick=duelMenu;drawLB();
+}
+function intro(){
+ hudUp();var s=S[si];g.className="card";
+ g.innerHTML='<h2>'+s.n+'</h2><p>'+s.d+'</p><p><b>'+(s.t==="build"?"Time depends on the strand length.":s.sec+" seconds per question.")+'</b></p><button class="btn" id="go">Go</button>';
+ document.getElementById("go").onclick=function(){qi=0;if(s.t==="build")newRound();else{s.o=shuf(s.q.slice());showQ()}};
+}
+function ok(){streak++;var p=10+Math.min(streak,5)*2+Math.round(Math.max(tl,0)/tt*8);score+=p;return p}
+function bad(){streak=0;hearts--;hudUp();if(hearts<=0){setTimeout(over,1200);return true}return false}
+function bar(n,t){return '<div class="bar"><i style="width:'+(n/t*100)+'%"></i></div>'}
+function showQ(){
+ var s=S[si],q=s.o[qi];locked=false;hudUp();
+ var h=bar(qi,s.o.length)+tbar()+'<div class="q">'+q[0]+'</div>';
+ shuf([0,1,2]).forEach(function(k){h+='<button class="opt" data-k="'+k+'">'+q[1][k]+'</button>'});
+ g.innerHTML=h+'<div class="fb" aria-live="polite"></div>';
+ g.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){pick(+b.dataset.k,b)}});
+ startT(s.sec,function(){pick(-1)});
+}
+function pick(k,b){
+ if(locked)return;locked=true;stopT();var s=S[si],q=s.o[qi],fb=g.querySelector(".fb"),dead=false;
+ g.querySelectorAll(".opt").forEach(function(x){if(+x.dataset.k===q[2])x.classList.add("ok")});
+ if(k===q[2]){var p=ok();fb.textContent="✅ +"+p+". "+q[3]}
+ else{if(b)b.classList.add("no");fb.textContent=(k<0?"⏰ Time's up! ":"❌ ")+q[3];dead=bad()}
+ hudUp();if(dead)return;
+ setTimeout(function(){qi++;if(qi>=s.o.length)stageDone();else showQ()},1500);
+}
+function newRound(){
+ var L=5+qi,a="ACGT";seq=[];for(var i=0;i<L;i++)seq.push(a[Math.floor(rnd()*4)]);pos=0;locked=false;drawBuild();
+ startT(4+L*1.6,function(){buildTimeout()});
+}
+function drawBuild(msg){
+ var s=S[si],h=bar(qi,s.rounds)+tbar()+'<div class="q">Round '+(qi+1)+': build the mRNA</div><div class="ends"><span>DNA template 3′</span><span>5′</span></div><div class="strand">';
+ seq.forEach(function(c){h+='<div class="b">'+(c==="U"?"T":c)+'</div>'});
+ h+='</div><div class="ends"><span>mRNA 5′</span><span>3′</span></div><div class="strand" id="rs">';
+ seq.forEach(function(c,i){h+='<div class="b r'+(i<pos?" f":"")+'">'+(i<pos?COMP[c]:"")+'</div>'});
+ h+='</div><div class="fb" aria-live="polite">'+(msg||"Tap the base that pairs with the next DNA letter.")+'</div><div class="pad">';
+ ["A","U","G","C"].forEach(function(c){h+='<button class="btn" data-c="'+c+'">'+c+'</button>'});
+ g.innerHTML=h+'</div>';
+ g.querySelectorAll(".pad .btn").forEach(function(b){b.onclick=function(){tap(b.dataset.c)}});
+}
+function nextRound(){qi++;if(qi>=S[si].rounds)stageDone();else newRound()}
+function buildTimeout(){
+ if(locked)return;locked=true;var dead=bad();drawBuild("⏰ Time's up! Too slow.");if(!dead)setTimeout(nextRound,1200);
+}
+function tap(c){
+ if(locked)return;
+ if(c===COMP[seq[pos]]){ok();pos++;hudUp();
+  if(pos>=seq.length){locked=true;stopT();score+=Math.round(tl*2);hudUp();drawBuild("🎉 Copy complete! Speed bonus +"+Math.round(tl*2));setTimeout(nextRound,1200)}
+  else drawBuild("Nice! Keep going.");
+ }else{
+  var dead=bad();drawBuild("❌ "+seq[pos]+" pairs with "+COMP[seq[pos]]+" (A→U, T→A, G→C, C→G).");
+  var cells=document.querySelectorAll("#rs .b");if(cells[pos])cells[pos].classList.add("x");
+  if(dead){locked=true;stopT()}
+ }
+}
+function stageDone(){
+ stopT();si++;
+ if(si>=S.length)return win();
+ g.innerHTML='<h2>Stage clear! ✨</h2><p>Score: '+score+'. Hearts left: '+hearts+'.</p><button class="btn" id="go">Next stage</button>';
+ document.getElementById("go").onclick=intro;
+}
+function win(){
+ var bonus=hearts*20;score+=bonus;hudUp();if(MODE==="duel")return duelEnd();var nb=score>pb;finish();
+ var r=hearts===3?"Transcription Legend 🏆":hearts===2?"RNAP Pro 🥇":"Survivor 🥈";
+ g.innerHTML='<p class="big">'+score+'</p><h2>'+r+'</h2><p>Boss defeated! Bonus +'+bonus+' for hearts left.'+(nb?' <b>New personal best! 🎉</b>':'')+'</p><button class="btn" id="go">Race again</button><div class="lb" id="lb"></div>';
+ document.getElementById("go").onclick=title;drawLB();
+}
+function over(){
+ stopT();if(MODE==="duel")return duelEnd();var nb=score>pb;finish();
+ g.innerHTML='<h2>Game over 💔</h2><p>You fell off the DNA at stage '+(si+1)+'. Score: '+score+(nb?'. <b>New personal best!</b>':'.')+'</p><button class="btn" id="go">Try again</button><div class="lb" id="lb"></div>';
+ document.getElementById("go").onclick=title;drawLB();
+}
+
+function mk(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296}}
+function hc(x){var h=7;for(var i=0;i<x.length;i++)h=(h*31+x.charCodeAt(i))|0;return h}
+function getOpp(){if(!ROOM)return null;var o=ROOM.peers().filter(function(p){return !p.isMe&&p.kind==="viewer"});return o[0]||null}
+function oppName(p){var k=p&&p.by;if(k&&onm[k])return onm[k];if(k&&USER)USER.profiles([k]).then(function(r){onm[k]=(r&&r[k]&&r[k].name)||"Opponent";onDuelPeers()}).catch(function(){});return "Opponent"}
+function duelMenu(){
+ stopT();hud.hidden=true;OP.hidden=true;g.className="card";
+ g.innerHTML='<h2>1v1 Duel ⚔️</h2><p>Same questions, same clock. Higher score wins.</p><button class="btn" id="mk">Create duel</button><p>Or join a friend with their code:</p><div><input id="cd" maxlength="4" placeholder="CODE" aria-label="Duel code"><button class="btn" id="jn">Join</button></div><div class="fb" id="er" aria-live="polite"></div><button class="opt" id="bk">Back</button>';
+ document.getElementById("bk").onclick=title;
+ document.getElementById("mk").onclick=function(){var a="ABCDEFGHJKMNPQRSTUVWXYZ23456789",c="";for(var i=0;i<4;i++)c+=a[Math.floor(Math.random()*a.length)];joinDuel(c)};
+ document.getElementById("jn").onclick=function(){var c=document.getElementById("cd").value.trim().toUpperCase();if(c.length!==4){document.getElementById("er").textContent="Enter the 4-character code.";return}joinDuel(c)};
+}
+async function joinDuel(c){
+ var er=document.getElementById("er");er.textContent="Joining...";
+ var r0=await getRoom();
+ if(!r0){er.textContent="Duels need live rooms, which this view doesn't offer. Open the page from the claude.ai link (signed in) and try again.";return}
+ try{var r=await r0.join("duel-"+c.toLowerCase());
+  ROOM=r;CODE=c;MODE="duel";PH="lobby";myReady=false;rnd=mk(hc(c));
+  r.presence({ready:false,score:0,hearts:3,st:0,done:false}).catch(function(){});r.onPeers(onDuelPeers);drawLobby()
+ }catch(e){er.textContent="Couldn't join ("+((e&&e.code)||"error")+"). "+(e&&e.code==="not_permitted"?"Your access level may not allow live rooms.":"Try again in a moment.")}
+}
+function drawLobby(){
+ var o=getOpp(),ready=o&&o.presence.ready;
+ g.className="card";
+ g.innerHTML='<h2>Duel lobby</h2><p>Share this code with your opponent:</p><div class="code">'+esc(CODE)+'</div><p>'+(o?'⚔️ <b>'+esc(oppName(o))+'</b> is here'+(ready?' and ready!':'.'):'Waiting for an opponent...')+'</p>'+
+ '<button class="btn" id="rd"'+(o&&!myReady?'':' disabled')+'>'+(myReady?'Ready ✔ waiting...':'I\'m ready')+'</button> <button class="opt" id="bk">Leave</button>';
+ document.getElementById("bk").onclick=title;
+ document.getElementById("rd").onclick=function(){myReady=true;ROOM.presence({ready:true}).catch(function(){});drawLobby()};
+ if(o&&ready&&myReady){PH="play";hearts=3;score=0;streak=0;si=0;OP.hidden=false;updOpp();intro()}
+}
+function updOpp(){var o=getOpp();if(!o){OP.textContent="⚔️ Opponent left";return}var p=o.presence;OP.textContent="⚔️ "+oppName(o)+": ⭐ "+(p.score||0)+"  ❤️ "+(p.hearts==null?3:p.hearts)+"  stage "+((p.st||0)+1)+(p.done?" ✔":"")}
+function onDuelPeers(){if(!ROOM)return;if(PH==="lobby")drawLobby();else if(PH==="play")updOpp();else if(PH==="end"){updOpp();drawEnd()}}
+function duelEnd(){PH="end";hudUp();ROOM.presence({done:true,score:score,hearts:Math.max(hearts,0)}).catch(function(){});drawEnd()}
+function drawEnd(){
+ var o=getOpp(),p=o&&o.presence,h='<p class="big">'+score+'</p>';
+ if(!o)h+='<h2>Opponent left 🏳️</h2><p>You win by forfeit.</p>';
+ else if(!p.done)h+='<h2>Finished!</h2><p>Waiting for '+esc(oppName(o))+' to finish... (they have '+(p.score||0)+')</p>';
+ else{var t=p.score||0;h+=score>t?'<h2>You win! 🏆</h2>':score<t?'<h2>You lost 💔</h2>':'<h2>Draw 🤝</h2>';h+='<p>You '+score+' vs '+esc(oppName(o))+' '+t+'</p>'}
+ g.innerHTML=h+'<button class="btn" id="go">Back to menu</button>';
+ document.getElementById("go").onclick=title;
+}
+title();
+async function getRoom(){if(RM)return RM;try{if(window.claude&&claude.use)RM=await claude.use("room")}catch(e){}return RM}
+getRoom();
+(async function(){var c=window.claude;if(!c||!c.use)return;
+ try{USER=await c.use("user");if(USER){ME=await USER.id()}}catch(e){}
+ try{var db=await c.use("db");if(!db)return;DB=db;
+  db.collection("lb").orderBy("best","desc").limit(100).onSnapshot(function(s){rows=s.docs.map(function(d){return{id:d.id,best:+d.data().best||0,runs:+d.data().runs||1}});resolveNames()},function(){});
+  drawLB()}catch(e){}
+})();
+</script>
+</body>
+</html>
