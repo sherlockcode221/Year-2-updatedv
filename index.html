@@ -1,61 +1,96 @@
+Fair point—neon pink on deep purple and radioactive green are definitely an acquired taste (or a quick way to burn your retinas during a late-night study session).
+Here is the code with a **complete palette overhaul**. The ugly themes have been thrown out and replaced with **3 clean, high-contrast, eye-friendly themes**:
+ 1. **Warm Parchment (Default):** Soft cream background with crisp dark navy text (gentle on the eyes, easy to read for hours).
+ 2. **Midnight Medical (Dark):** Sleek, deep slate-navy dark mode with soft cyan accents (perfect for studying in the dark without glare).
+ 3. **Nordic Slate (Cool Light):** A fresh, clean minimalist light theme with soft slate-gray and teal accents.
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Neuroanatomy: Basal Nuclei & Internal Capsule</title>
-<!-- Firebase SDKs for Global Leaderboard & Duels -->
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
 <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 <style>
-:root{--bg:#fff8ec;--ink:#1d2a4a;--card:#fff;--line:#1d2a4a;--yel:#ffc83d;--cor:#ff6b57;--mint:#5fd3a6;--sky:#8cc8ff;--mut:#5b6785;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a30;--ink:#fff4dc;--card:#1c2745;--line:#fff4dc;--mut:#a9b3d1}}
-:root[data-theme="light"]{--bg:#fff8ec;--ink:#1d2a4a;--card:#fff;--line:#1d2a4a;--yel:#ffc83d;--cor:#ff6b57;--mint:#5fd3a6;--sky:#8cc8ff;--mut:#5b6785}
-:root[data-theme="dark"]{--bg:#121a30;--ink:#fff4dc;--card:#1c2745;--line:#fff4dc;--mut:#a9b3d1}
-:root[data-theme="cyberpunk"]{--bg:#0d0221;--ink:#00f0ff;--card:#190a38;--line:#ff007f;--yel:#ff007f;--cor:#ff003c;--mint:#00f0ff;--sky:#7000ff;--mut:#9a4bff}
-:root[data-theme="biohazard"]{--bg:#0b1d0e;--ink:#55ff55;--card:#132e17;--line:#33cc33;--yel:#33cc33;--cor:#ff3300;--mint:#55ff55;--sky:#1a5e22;--mut:#2f8537}
+/* --- CLEAN PALETTES --- */
+:root[data-theme="light"] {
+  --bg: #faf7f2;
+  --card: #ffffff;
+  --ink: #1e293b;
+  --line: #334155;
+  --yel: #fbbf24;
+  --cor: #ef4444;
+  --mint: #10b981;
+  --sky: #3b82f6;
+  --mut: #64748b;
+}
+
+:root[data-theme="dark"] {
+  --bg: #0f172a;
+  --card: #1e293b;
+  --ink: #f8fafc;
+  --line: #cbd5e1;
+  --yel: #f59e0b;
+  --cor: #f87171;
+  --mint: #34d399;
+  --sky: #60a5fa;
+  --mut: #94a3b8;
+}
+
+:root[data-theme="nordic"] {
+  --bg: #f1f5f9;
+  --card: #ffffff;
+  --ink: #0f172a;
+  --line: #475569;
+  --yel: #38bdf8;
+  --cor: #f43f5e;
+  --mint: #2dd4bf;
+  --sky: #818cf8;
+  --mut: #64748b;
+}
 
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;line-height:1.45;font-size:16px;transition:background .3s,color .3s}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;line-height:1.45;font-size:16px;transition:background .2s,color .2s}
 main{max-width:560px;margin:0 auto;padding:14px 14px 50px;position:relative;}
 .hud{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:10px;gap:6px;flex-wrap:wrap}
 .hud span{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap;font-size:.9rem;display:inline-flex;align-items:center;gap:4px}
-.card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:18px;box-shadow:6px 6px 0 var(--line);transition:transform .1s;position:relative;overflow:hidden;}
+.card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:18px;box-shadow:4px 4px 0 var(--line);transition:transform .1s;position:relative;overflow:hidden;}
 .card.shake{animation:shake 0.3s ease-in-out}
 @keyframes shake { 0%{transform:translate(0,0)} 25%{transform:translate(-6px,0)} 50%{transform:translate(6px,0)} 75%{transform:translate(-6px,0)} 100%{transform:translate(0,0)} }
-.hero{background:var(--yel);color:#1d2a4a}
+.hero{background:var(--card);color:var(--ink)}
 h1{font-size:2.1rem;line-height:1.05;margin:0 0 8px;letter-spacing:-.02em}
 h2{margin:0 0 6px;font-size:1.3rem}
 p{margin:6px 0}
-.bar{height:10px;background:rgba(128,128,128,.25);border-radius:999px;overflow:hidden;margin:0 0 12px}
+.bar{height:10px;background:rgba(128,128,128,.2);border-radius:999px;overflow:hidden;margin:0 0 12px}
 .bar i{display:block;height:100%;background:var(--cor);transition:width .3s}
-.btn{font:inherit;font-weight:800;color:#1d2a4a;background:var(--yel);border:3px solid var(--line);border-radius:14px;padding:11px 18px;cursor:pointer;box-shadow:3px 3px 0 var(--line)}
-.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
-.btn:disabled{opacity:.5;cursor:not-allowed}
+.btn{font:inherit;font-weight:800;color:var(--ink);background:var(--yel);border:2px solid var(--line);border-radius:14px;padding:11px 18px;cursor:pointer;box-shadow:2px 2px 0 var(--line)}
+.btn:active{transform:translate(1px,1px);box-shadow:0 0 0 var(--line)}
+.btn:disabled{opacity:.4;cursor:not-allowed}
 button:focus-visible{outline:3px solid var(--cor);outline-offset:2px}
 .opt{display:block;width:100%;text-align:left;font:inherit;font-weight:600;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;line-height:1.35}
-.opt.ok{background:var(--mint);color:#10301f}
-.opt.no{background:var(--cor);color:#2a0a05}
+.opt.ok{background:var(--mint);color:#022c22}
+.opt.no{background:var(--cor);color:#450a0a}
 .q{font-weight:800;font-size:1.1rem;margin:8px 0}
 .fb{min-height:3em;font-weight:600;margin:8px 0}
 .big{font-size:2.6rem;font-weight:800;margin:0}
-.tbar{height:12px;background:rgba(128,128,128,.25);border-radius:999px;overflow:hidden;border:2px solid var(--line)}
+.tbar{height:12px;background:rgba(128,128,128,.2);border-radius:999px;overflow:hidden;border:2px solid var(--line)}
 .tbar i{display:block;height:100%;width:100%;background:var(--mint)}
 .tc{text-align:right;font-weight:800;font-size:.9rem;margin:2px 0 6px}
 .lb{margin-top:18px}
 .lb ol{list-style:none;margin:8px 0 0;padding:0}
 .lb li{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:700}
-.lb li.me{background:var(--yel);color:#1d2a4a}
+.lb li.me{background:var(--yel);color:#0f172a}
 .lb li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
-input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;padding:12px;border:3px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:8px 0}
+input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:8px 0}
 .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
 .pwr-bar{display:flex;gap:6px;margin:10px 0}
 .pwr-btn{flex:1;padding:6px;font-size:.85rem;background:var(--bg);border:2px solid var(--line);border-radius:10px;font-weight:800;cursor:pointer;color:var(--ink)}
 .pwr-btn:disabled{opacity:.4;cursor:not-allowed}
 .shop-item{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
 .shop-item div{text-align:left;display:flex;align-items:center;gap:8px}
-.opp{background:var(--sky);color:#10243f;border:2px solid var(--line);border-radius:12px;padding:6px 12px;margin-bottom:10px;font-weight:700;font-size:.9rem}
+.opp{background:var(--sky);color:#0f172a;border:2px solid var(--line);border-radius:12px;padding:6px 12px;margin-bottom:10px;font-weight:700;font-size:.9rem}
 .code{font-size:2.4rem;font-weight:800;letter-spacing:.25em;text-align:center;margin:10px 0}
 .boss-box{border:3px solid var(--cor);background:var(--bg);border-radius:14px;padding:10px;margin-bottom:12px;text-align:center}
 .boss-hp{height:16px;background:rgba(128,128,128,.3);border-radius:999px;overflow:hidden;border:2px solid var(--line);margin-top:4px}
@@ -64,9 +99,7 @@ input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;pad
 .review-item{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;text-align:left}
 .mode-toggle{display:flex;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:4px;margin:10px 0;gap:4px}
 .mode-btn{flex:1;border:none;background:transparent;font:inherit;font-weight:800;padding:8px;border-radius:10px;cursor:pointer;color:var(--ink)}
-.mode-btn.active{background:var(--yel);color:#1d2a4a;border:2px solid var(--line)}
-.ink-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;z-content:99;border-radius:18px;font-weight:800;font-size:1.4rem;animation:fadeIn 0.2s;}
-@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.mode-btn.active{background:var(--yel);color:#0f172a;border:2px solid var(--line)}
 </style>
 </head>
 <body>
@@ -82,9 +115,9 @@ input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;pad
 </main>
 <script>
 var AVATARS = {
-  brain: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZjZiNTciLz48cGF0aCBkPSJNMjIgMjBjLTMgMC01IDItNSA1IDAgMiAxIDQgMyA1LTIgMS0zIDMtMyA1IDAgMyAyIDYgNiA2 IDEgMCAyIDAgMy0x IDEgMyA4IDUgNyA1czYtMiA3LTVjMSAxIDIgMSAzIDEgNCAwIDYtMyA2LTYgMC0yLTEtNC0zLTUgMi0xIDMtMyAzLTUgMC0zLTItNS01LTUtMiAwLTQgMS01IDItMi0yLTUtMy04LTNzLTYgMS04IDNjLTEtMS0zLTItNS0yeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==',
-  dna: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM1ZmQzYTYiLz48cGF0aCBkPSJNMjAgMTZjNiA4IDE4IDI0IDI0IDMyTTQ0IDE2Yy02IDgtMTggMjQtMjQgMzJNMjIgMjJoMjBNMjQgMzJoMTZNMjAgNDJoMjQiIHN0cm9rZT0iIzFkMmE0YSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=',
-  stethoscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM4Y2M8ZmYiLz48cGF0aCBkPSJNMjAgMTZ2MTRjMCA3IDUgMTIgMTIgMTJzMTItNSAxMi0xMlYxNk0zMiA0MnYxMCIgc3Ryb2tlPSIjMWQyYTRhIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjUyIiByPSI1IiBmaWxsPSIjZmZjODNkIi8+PC9zdmdn',
+  brain: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZjZiNTciLz48cGF0aCBkPSJNMjIgMjBjLTMgMC01IDItNSA1IDAgMiAxIDQgMyA1LTIgMS0zIDMtMyA1IDAgMyAyIDYgNiA2 IDEgMCAyIDAgMy0x IDEgMyA8IDUgNyA1czYtMiA3LTVjMSAxIDIgMSAz IDEgNCAwIDYtMyA2LTYgMC0yLTEtNC0zLTUgMi0xIDMtMyAzLTUgMC0zLTItNS01LTUtMiAwLTQgMS01IDItMi0yLTUtMy04LTNzLTYgMS04IDNjLTEtMS0zLTItNS0yeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==',
+  dna: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM1ZmQzYTYiLz48cGF0aCBkPSJNMjAgMTZjNiA4IDE4IDI0IDI0IDMyTTQ4IDE2Yy02IDgtMTggMjQtMjQgMzJNMjIgMjJoMjBNMjQgMzJoMTZNMjAgNDJoMjQiIHN0cm9rZT0iIzFkMmE0YSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=',
+  stethoscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM4Y2M4ZmYiLz48cGF0aCBkPSJNMjAgMTZ2MTRjMCA3IDUgMTIgMTIgMTJzMTItNSAxMi0xMlYxNk0zMiA0MnYxMCIgc3Ryb2tlPSIjMWQyYTRhIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjUyIiByPSI1IiBmaWxsPSIjZmZjODNkIi8+PC9zdmdn',
   microscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZmM4M2QiLz48cGF0aCBkPSJNMjQgNDhoMTZNMzIgNDhWMzZNMzIgMjRsOC04TTI0IDI0bDEyIDEyIiBzdHJva2U9IiMxZDJhNGEiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmdn'
 };
 
@@ -115,10 +148,6 @@ function playSFX(type) {
       osc.type = 'square'; osc.frequency.setValueAtTime(800, now);
       gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
       osc.start(now); osc.stop(now + 0.04);
-    } else if (type === 'sabotage') {
-      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.linearRampToValueAtTime(400, now + 0.3);
-      gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
-      osc.start(now); osc.stop(now + 0.3);
     }
   } catch(e) {}
 }
@@ -301,31 +330,14 @@ function hudUp(){
   document.getElementById("ss").textContent="⭐ "+score;
   document.getElementById("st").textContent="🔥 "+streak;
   document.getElementById("cc").innerHTML='<img class="avatar-img" src="'+AVATARS[currentAvatar]+'"> 🪙 '+coins;
-  if(MODE==="duel" && duelRef){
-    duelRef.child(playerId).update({ score: score, hearts: Math.max(hearts,0), stage: si, name: playerName, avatar: currentAvatar });
-  }
 }
 
 function powerBar(){
-  if(MODE==="duel") {
-    return '<div class="pwr-bar"><button class="pwr-btn" onclick="sendSabotage()" '+(streak<3?'disabled':'')+'>💣 Ink Sabotage (3 Streak Required)</button></div>';
-  }
   return '<div class="pwr-bar">'+
     '<button class="pwr-btn" onclick="usePwr(\'heart\')" '+(items.heart<=0||hearts>=3?'disabled':'')+'>❤️ +1 ('+items.heart+')</button>'+
     '<button class="pwr-btn" onclick="usePwr(\'freeze\')" '+(items.freeze<=0?'disabled':'')+'>⏱️ +5s ('+items.freeze+')</button>'+
     '<button class="pwr-btn" onclick="usePwr(\'double\')" '+(items.double<=0||doubleCoinActive?'disabled':'')+'>🪙 2x ('+(doubleCoinActive?'ON':items.double)+')</button>'+
   '</div>';
-}
-
-function sendSabotage(){
-  if(MODE==="duel" && duelRef && streak>=3){
-    streak=0;
-    var oppKey = Object.keys(allPlayersInRoom).find(k => k !== playerId);
-    if(oppKey){
-      duelRef.child(oppKey).update({ sabotage: Date.now() });
-      playSFX('sabotage');
-    }
-  }
 }
 
 function usePwr(type){
@@ -368,7 +380,6 @@ function changeName(){
 
 function title(){
  stopT();hud.hidden=true;OP.hidden=true;MODE="solo";doubleCoinActive=false;
- if(duelRef) { duelRef.off(); duelRef=null; }
  g.className="card hero";
  
  var showRewardModal = checkDailyStreak();
@@ -384,7 +395,6 @@ function title(){
  '<button class="btn" id="go">Play Challenge</button>'+
  '<button class="btn" id="surv" style="background:var(--cor);color:#fff;">⚡ Sudden Death</button>'+
  '<button class="btn" id="shp" style="background:var(--mint)">🛍️ Shop</button>'+
- '<button class="btn" id="dl">⚔️ 1v1 Duel</button>'+
  '</div><div class="lb" id="lb"></div>';
 
  document.getElementById("mMCQ").onclick=function(){QUESTION_FORMAT="mcq";title()};
@@ -392,7 +402,6 @@ function title(){
  document.getElementById("go").onclick=function(){MODE="solo";hearts=3;score=0;streak=0;si=0;missedQuestions=[];intro()};
  document.getElementById("surv").onclick=startSurvivalMode;
  document.getElementById("shp").onclick=openShop;
- document.getElementById("dl").onclick=duelMenu;
  drawLB();
 }
 
@@ -414,7 +423,7 @@ function openShop(){
   stopT();hud.hidden=true;OP.hidden=true;
   g.className="card";
   
-  var getThemeBtn = function(tName, label, cost) {
+  var getThemeBtn = function(tName, cost) {
     if(currentTheme === tName) return '<button class="btn" style="background:var(--mint)" disabled>Equipped ✓</button>';
     if(unlockedThemes.includes(tName)) return '<button class="btn" onclick="applyTheme(\''+tName+'\'); openShop();">Equip</button>';
     return '<button class="btn" onclick="buyTheme(\''+tName+'\', '+cost+')">'+cost+' 🪙</button>';
@@ -431,9 +440,9 @@ function openShop(){
   '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.stethoscope+'"> <b>Stethoscope</b></div>'+(unlockedAvatars.includes('stethoscope') ? '<button class="btn" onclick="setAvatar(\'stethoscope\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'stethoscope\', 150)">150 🪙</button>')+'</div>'+
   '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.microscope+'"> <b>Microscope</b></div>'+(unlockedAvatars.includes('microscope') ? '<button class="btn" onclick="setAvatar(\'microscope\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'microscope\', 200)">200 🪙</button>')+'</div>'+
   '<h3>Themes 🎨</h3>'+
-  '<div class="shop-item"><div><b>Default Light Theme</b></div>'+getThemeBtn('light', 'Default Light', 0)+'</div>'+
-  '<div class="shop-item"><div><b>Dark Cyberpunk</b></div>'+getThemeBtn('cyberpunk', 'Dark Cyberpunk', 150)+'</div>'+
-  '<div class="shop-item"><div><b>Biohazard Green</b></div>'+getThemeBtn('biohazard', 'Biohazard Green', 150)+'</div>'+
+  '<div class="shop-item"><div><b>Warm Parchment (Light)</b></div>'+getThemeBtn('light', 0)+'</div>'+
+  '<div class="shop-item"><div><b>Midnight Medical (Dark)</b></div>'+getThemeBtn('dark', 100)+'</div>'+
+  '<div class="shop-item"><div><b>Nordic Slate (Cool)</b></div>'+getThemeBtn('nordic', 100)+'</div>'+
   '<div class="fb" id="sfb"></div>'+
   '<button class="opt" id="bk">Back to Menu</button>';
   document.getElementById("bk").onclick=title;
@@ -456,83 +465,6 @@ function buyAvatar(a, cost){
 function setAvatar(a){
   currentAvatar = a; saveState();
   if(pb > 0) submitScoreToGlobal(pb); openShop();
-}
-
-function duelMenu(){
-  stopT();hud.hidden=true;OP.hidden=true;g.className="card";
-  g.innerHTML='<h2>1v1 Neuro Duel ⚔️</h2><p>Compete live against another student on identical anatomy questions!</p>'+
-  '<button class="btn" id="mk">Create Room Code</button>'+
-  '<p>Or enter 4-letter room code:</p>'+
-  '<div><input type="text" id="cd" maxlength="4" placeholder="CODE"><button class="btn" id="jn">Join Duel</button></div>'+
-  '<div class="fb" id="er"></div><button class="opt" id="bk">Back</button>';
-  document.getElementById("bk").onclick=title;
-  document.getElementById("mk").onclick=function(){
-    var c=""; var a="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
-    for(var i=0;i<4;i++) c+=a[Math.floor(Math.random()*a.length)];
-    joinDuelRoom(c);
-  };
-  document.getElementById("jn").onclick=function(){
-    var c=document.getElementById("cd").value.trim().toUpperCase();
-    if(c.length!==4){ document.getElementById("er").textContent="Enter a 4-character code."; return; }
-    joinDuelRoom(c);
-  };
-}
-
-function joinDuelRoom(code){
-  ROOM_CODE = code; MODE = "duel"; PH = "lobby"; myReadyState = false; allPlayersInRoom = {};
-  duelRef = db.ref("rooms/" + code);
-  
-  duelRef.child(playerId).set({ name: playerName, avatar: currentAvatar, ready: false, score: 0, hearts: 3, stage: 0, done: false, sabotage: 0 });
-  duelRef.child(playerId).onDisconnect().remove();
-
-  duelRef.on("value", function(snap){
-    allPlayersInRoom = snap.val() || {};
-    var keys = Object.keys(allPlayersInRoom);
-    var oppKey = keys.find(k => k !== playerId);
-    var opponentData = oppKey ? allPlayersInRoom[oppKey] : null;
-    var myData = allPlayersInRoom[playerId];
-
-    if(myData && myData.sabotage && myData.sabotage > (window.lastSabotageSeen||0)){
-      window.lastSabotageSeen = myData.sabotage;
-      triggerSabotageOverlay();
-    }
-
-    if(PH === "lobby") drawDuelLobby(opponentData);
-    else if(PH === "play") updateOpponentHUD(opponentData);
-    else if(PH === "end") drawDuelEnd(opponentData);
-
-    if(PH === "lobby" && keys.length === 2 && myReadyState && opponentData && opponentData.ready){
-      PH = "play"; hearts = 3; score = 0; streak = 0; si = 0; missedQuestions = []; OP.hidden = false;
-      updateOpponentHUD(opponentData); intro();
-    }
-  });
-}
-
-function triggerSabotageOverlay(){
-  playSFX('sabotage');
-  var ink = document.createElement("div");
-  ink.className = "ink-overlay";
-  ink.innerHTML = "<div>💣 INK SABOTAGE!</div><small>Opponent blinded your screen!</small>";
-  g.appendChild(ink);
-  setTimeout(function(){ if(ink.parentNode) ink.parentNode.removeChild(ink); }, 2500);
-}
-
-function drawDuelLobby(opponentData){
-  g.className = "card";
-  g.innerHTML = '<h2>Duel Lobby</h2><p>Share code with classmate:</p><div class="code">'+esc(ROOM_CODE)+'</div>'+
-  '<p>'+(opponentData ? '⚔️ <img class="avatar-img" src="'+AVATARS[opponentData.avatar||'brain']+'"> <b>'+esc(opponentData.name)+'</b> is in room ' + (opponentData.ready ? 'and ready!' : '(waiting...)') : 'Waiting for opponent...')+'</p>'+
-  '<button class="btn" id="rd" '+(opponentData ? '' : 'disabled')+'>' + (myReadyState ? 'Ready! Waiting...' : 'I\'m Ready') + '</button> '+
-  '<button class="opt" id="bk">Leave Room</button>';
-  
-  document.getElementById("bk").onclick = title;
-  document.getElementById("rd").onclick = function(){
-    myReadyState = true; duelRef.child(playerId).update({ ready: true }); drawDuelLobby(opponentData);
-  };
-}
-
-function updateOpponentHUD(opponentData){
-  if(!opponentData) { OP.textContent = "⚔️ Opponent disconnected"; return; }
-  OP.innerHTML = '⚔️ <img class="avatar-img" src="'+AVATARS[opponentData.avatar||'brain']+'"> ' + esc(opponentData.name) + ": ⭐ " + (opponentData.score||0) + "  ❤️ " + (opponentData.hearts??3) + "  Stage " + ((opponentData.stage||0)+1) + (opponentData.done ? " ✔" : "");
 }
 
 function intro(){
@@ -641,13 +573,6 @@ function win(){
  if(isNewBest){ pb = score; saveState(); }
  submitScoreToGlobal(score);
  hudUp();
- if(MODE==="duel"){
-   PH="end";
-   duelRef.child(playerId).update({ done: true, score: score });
-   var oppKey = Object.keys(allPlayersInRoom).find(k => k !== playerId);
-   drawDuelEnd(oppKey ? allPlayersInRoom[oppKey] : null);
-   return;
- }
  g.innerHTML='<p class="big">'+score+'</p><h2>Master of Neuroanatomy 🏆</h2><p>Run Complete! Bonus +'+bonus+' pts & +50 🪙.'+(isNewBest?' <b>New High Score! 🎉</b>':'')+'</p><div class="row"><button class="btn" id="go">Play Again</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div><div class="lb" id="lb"></div>';
  document.getElementById("go").onclick=title;
  document.getElementById("rev").onclick=drawMistakesReview;
@@ -659,13 +584,6 @@ function over(){
  var isNewBest = score > pb;
  if(isNewBest){ pb = score; saveState(); }
  submitScoreToGlobal(score);
- if(MODE==="duel"){
-   PH="end";
-   duelRef.child(playerId).update({ done: true, score: score });
-   var oppKey = Object.keys(allPlayersInRoom).find(k => k !== playerId);
-   drawDuelEnd(oppKey ? allPlayersInRoom[oppKey] : null);
-   return;
- }
  g.innerHTML='<h2>Exam Failed 💔</h2><p>Review Prof. Autifi\'s lecture slides and try again! Score: '+score+(isNewBest?'. <b>New High Score!</b>':'.')+'</p><div class="row"><button class="btn" id="go">Try Again</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div><div class="lb" id="lb"></div>';
  document.getElementById("go").onclick=title;
  document.getElementById("rev").onclick=drawMistakesReview;
@@ -698,23 +616,9 @@ function drawMistakesReview(){
   document.getElementById("mmenu").onclick = title;
 }
 
-function drawDuelEnd(opponentData){
-  var h='<p class="big">'+score+'</p>';
-  if(!opponentData) h+='<h2>Opponent Left 🏳️</h2><p>You win by forfeit!</p>';
-  else if(!opponentData.done) h+='<h2>Finished!</h2><p>Waiting for '+esc(opponentData.name)+' to complete their run... (Current: '+(opponentData.score||0)+' pts)</p>';
-  else {
-    var oppScore = opponentData.score || 0;
-    if(score > oppScore) h+='<h2>You Win! 🏆</h2>';
-    else if(score < oppScore) h+='<h2>You Lost 💔</h2>';
-    else h+='<h2>Draw! 🤝</h2>';
-    h+='<p>Your Score: '+score+' vs '+esc(opponentData.name)+': '+oppScore+'</p>';
-  }
-  g.innerHTML=h+'<div class="row"><button class="btn" id="go">Main Menu</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div>';
-  document.getElementById("go").onclick=title;
-  document.getElementById("rev").onclick=drawMistakesReview;
-}
-
 title();
 </script>
 </body>
 </html>
+
+```
