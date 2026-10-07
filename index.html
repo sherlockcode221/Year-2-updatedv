@@ -10,6 +10,7 @@
 <style>
 :root{--bg:#fff8ec;--ink:#1d2a4a;--card:#fff;--line:#1d2a4a;--yel:#ffc83d;--cor:#ff6b57;--mint:#5fd3a6;--sky:#8cc8ff;--mut:#5b6785;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a30;--ink:#fff4dc;--card:#1c2745;--line:#fff4dc;--mut:#a9b3d1}}
+:root[data-theme="light"]{--bg:#fff8ec;--ink:#1d2a4a;--card:#fff;--line:#1d2a4a;--yel:#ffc83d;--cor:#ff6b57;--mint:#5fd3a6;--sky:#8cc8ff;--mut:#5b6785}
 :root[data-theme="dark"]{--bg:#121a30;--ink:#fff4dc;--card:#1c2745;--line:#fff4dc;--mut:#a9b3d1}
 :root[data-theme="cyberpunk"]{--bg:#0d0221;--ink:#00f0ff;--card:#190a38;--line:#ff007f;--yel:#ff007f;--cor:#ff003c;--mint:#00f0ff;--sky:#7000ff;--mut:#9a4bff}
 :root[data-theme="biohazard"]{--bg:#0b1d0e;--ink:#55ff55;--card:#132e17;--line:#33cc33;--yel:#33cc33;--cor:#ff3300;--mint:#55ff55;--sky:#1a5e22;--mut:#2f8537}
@@ -83,7 +84,7 @@ input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;pad
 var AVATARS = {
   brain: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZjZiNTciLz48cGF0aCBkPSJNMjIgMjBjLTMgMC01IDItNSA1IDAgMiAxIDQgMyA1LTIgMS0zIDMtMyA1IDAgMyAyIDYgNiA2 IDEgMCAyIDAgMy0x IDEgMyA4IDUgNyA1czYtMiA3LTVjMSAxIDIgMSAzIDEgNCAwIDYtMyA2LTYgMC0yLTEtNC0zLTUgMi0xIDMtMyAzLTUgMC0zLTItNS01LTUtMiAwLTQgMS01IDItMi0yLTUtMy04LTNzLTYgMS04IDNjLTEtMS0zLTItNS0yeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==',
   dna: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM1ZmQzYTYiLz48cGF0aCBkPSJNMjAgMTZjNiA4IDE4IDI0IDI0IDMyTTQ0IDE2Yy02IDgtMTggMjQtMjQgMzJNMjIgMjJoMjBNMjQgMzJoMTZNMjAgNDJoMjQiIHN0cm9rZT0iIzFkMmE0YSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=',
-  stethoscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM4Y2M4ZmYiLz48cGF0aCBkPSJNMjAgMTZ2MTRjMCA3IDUgMTIgMTIgMTJzMTItNSAxMi0xMlYxNk0zMiA0MnYxMCIgc3Ryb2tlPSIjMWQyYTRhIiBzdHJva2Utd2iltGgtIjQiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjUyIiByPSI1IiBmaWxsPSIjZmZjODNkIi8+PC9zdmdn',
+  stethoscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM4Y2M8ZmYiLz48cGF0aCBkPSJNMjAgMTZ2MTRjMCA3IDUgMTIgMTIgMTJzMTItNSAxMi0xMlYxNk0zMiA0MnYxMCIgc3Ryb2tlPSIjMWQyYTRhIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjUyIiByPSI1IiBmaWxsPSIjZmZjODNkIi8+PC9zdmdn',
   microscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZmM4M2QiLz48cGF0aCBkPSJNMjQgNDhoMTZNMzIgNDhWMzZNMzIgMjRsOC04TTI0IDI0bDEyIDEyIiBzdHJva2U9IiMxZDJhNGEiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmdn'
 };
 
@@ -171,6 +172,7 @@ try{
 function applyTheme(theme) {
   currentTheme = theme;
   document.documentElement.setAttribute("data-theme", theme);
+  localStorage.setItem("ctg_theme", theme);
   saveState();
 }
 applyTheme(currentTheme);
@@ -226,7 +228,7 @@ function submitScoreToGlobal(finalScore){
   });
 }
 
-// PROF. AUTIFI NEUROANATOMY QUESTIONS SUPPORTING DUAL FORMATS
+// PROF. AUTIFI NEUROANATOMY QUESTIONS
 var S=[
 {n:"Stage 1: White Matter Fiber Classifier",d:"Analyze cerebral fiber bundles (Association, Commissural, Projection).",secMCQ:10,secSA:30,q:[
 ["Which bundle connects the orbital gyri (in front) with the temporal pole across the stem of the lateral sulcus?",["Uncinate fasciculus","Cingulum","Superior longitudinal fasciculus"],0,"uncinate fasciculus","Uncinate fasciculus connects orbital gyri to temporal pole."],
@@ -411,6 +413,13 @@ function startSurvivalMode(){
 function openShop(){
   stopT();hud.hidden=true;OP.hidden=true;
   g.className="card";
+  
+  var getThemeBtn = function(tName, label, cost) {
+    if(currentTheme === tName) return '<button class="btn" style="background:var(--mint)" disabled>Equipped ✓</button>';
+    if(unlockedThemes.includes(tName)) return '<button class="btn" onclick="applyTheme(\''+tName+'\'); openShop();">Equip</button>';
+    return '<button class="btn" onclick="buyTheme(\''+tName+'\', '+cost+')">'+cost+' 🪙</button>';
+  };
+
   g.innerHTML='<h2>🛍️ Game Shop</h2><p>Balance: <b>🪙 '+coins+' coins</b></p>'+
   '<h3>Power-ups</h3>'+
   '<div class="shop-item"><div><b>❤️ Extra Heart</b><br><small>Restores 1 heart mid-game</small></div><button class="btn" onclick="buyItem(\'heart\', 50)">50 🪙</button></div>'+
@@ -422,8 +431,9 @@ function openShop(){
   '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.stethoscope+'"> <b>Stethoscope</b></div>'+(unlockedAvatars.includes('stethoscope') ? '<button class="btn" onclick="setAvatar(\'stethoscope\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'stethoscope\', 150)">150 🪙</button>')+'</div>'+
   '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.microscope+'"> <b>Microscope</b></div>'+(unlockedAvatars.includes('microscope') ? '<button class="btn" onclick="setAvatar(\'microscope\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'microscope\', 200)">200 🪙</button>')+'</div>'+
   '<h3>Themes 🎨</h3>'+
-  '<div class="shop-item"><div><b>Dark Cyberpunk</b></div>'+(unlockedThemes.includes('cyberpunk') ? '<button class="btn" onclick="applyTheme(\'cyberpunk\')">Equip</button>' : '<button class="btn" onclick="buyTheme(\'cyberpunk\', 150)">150 🪙</button>')+'</div>'+
-  '<div class="shop-item"><div><b>Biohazard Green</b></div>'+(unlockedThemes.includes('biohazard') ? '<button class="btn" onclick="applyTheme(\'biohazard\')">Equip</button>' : '<button class="btn" onclick="buyTheme(\'biohazard\', 150)">150 🪙</button>')+'</div>'+
+  '<div class="shop-item"><div><b>Default Light Theme</b></div>'+getThemeBtn('light', 'Default Light', 0)+'</div>'+
+  '<div class="shop-item"><div><b>Dark Cyberpunk</b></div>'+getThemeBtn('cyberpunk', 'Dark Cyberpunk', 150)+'</div>'+
+  '<div class="shop-item"><div><b>Biohazard Green</b></div>'+getThemeBtn('biohazard', 'Biohazard Green', 150)+'</div>'+
   '<div class="fb" id="sfb"></div>'+
   '<button class="opt" id="bk">Back to Menu</button>';
   document.getElementById("bk").onclick=title;
