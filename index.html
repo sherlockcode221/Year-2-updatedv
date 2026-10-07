@@ -13,15 +13,14 @@
 :root[data-theme="dark"]{--bg:#121a30;--ink:#fff4dc;--card:#1c2745;--line:#fff4dc;--mut:#a9b3d1}
 :root[data-theme="cyberpunk"]{--bg:#0d0221;--ink:#00f0ff;--card:#190a38;--line:#ff007f;--yel:#ff007f;--cor:#ff003c;--mint:#00f0ff;--sky:#7000ff;--mut:#9a4bff}
 :root[data-theme="biohazard"]{--bg:#0b1d0e;--ink:#55ff55;--card:#132e17;--line:#33cc33;--yel:#33cc33;--cor:#ff3300;--mint:#55ff55;--sky:#1a5e22;--mut:#2f8537}
-:root[data-theme="gold"]{--bg:#1a1400;--ink:#ffe680;--card:#332900;--line:#ffd700;--yel:#ffd700;--cor:#ff4500;--mint:#ffe680;--sky:#806600;--mut:#b39700}
 
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *{box-sizing:border-box}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;line-height:1.45;font-size:16px;transition:background .3s,color .3s}
-main{max-width:560px;margin:0 auto;padding:14px 14px 50px}
+main{max-width:560px;margin:0 auto;padding:14px 14px 50px;position:relative;}
 .hud{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:10px;gap:6px;flex-wrap:wrap}
 .hud span{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap;font-size:.9rem;display:inline-flex;align-items:center;gap:4px}
-.card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:18px;box-shadow:6px 6px 0 var(--line);transition:transform .1s}
+.card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:18px;box-shadow:6px 6px 0 var(--line);transition:transform .1s;position:relative;overflow:hidden;}
 .card.shake{animation:shake 0.3s ease-in-out}
 @keyframes shake { 0%{transform:translate(0,0)} 25%{transform:translate(-6px,0)} 50%{transform:translate(6px,0)} 75%{transform:translate(-6px,0)} 100%{transform:translate(0,0)} }
 .hero{background:var(--yel);color:#1d2a4a}
@@ -60,8 +59,11 @@ input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;pad
 .boss-box{border:3px solid var(--cor);background:var(--bg);border-radius:14px;padding:10px;margin-bottom:12px;text-align:center}
 .boss-hp{height:16px;background:rgba(128,128,128,.3);border-radius:999px;overflow:hidden;border:2px solid var(--line);margin-top:4px}
 .boss-hp i{display:block;height:100%;background:var(--cor);width:100%;transition:width .4s}
-.avatar-img{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);background:#fff;display:inline-block;vertical-align:middle;object-fit:cover}
+.avatar-img{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:#fff;display:inline-block;vertical-align:middle;object-fit:cover;flex-shrink:0;}
 .review-item{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;text-align:left}
+/* Sabotage Ink Overlay */
+.ink-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;z-content:99;border-radius:18px;font-weight:800;font-size:1.4rem;animation:fadeIn 0.2s;}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
 </style>
 </head>
 <body>
@@ -76,12 +78,12 @@ input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;pad
 <div class="card" id="g"></div>
 </main>
 <script>
-// Built-in Inline SVG Picture Avatars
+// Base64 Encoded SVG Images (Guaranteed to render cleanly everywhere)
 var AVATARS = {
-  brain: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%23ff6b57"/><path d="M22 20c-3 0-5 2-5 5 0 2 1 4 3 5-2 1-3 3-3 5 0 3 2 6 6 6 1 0 2 0 3-1 1 3 4 5 7 5s6-2 7-5c1 1 2 1 3 1 4 0 6-3 6-6 0-2-1-4-3-5 2-1 3-3 3-5 0-3-2-5-5-5-2 0-4 1-5 2-2-2-5-3-8-3s-6 1-8 3c-1-1-3-2-5-2z" fill="%23fff"/></svg>',
-  dna: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%235fd3a6"/><path d="M20 16c6 8 18 24 24 32M44 16c-6 8-18 24-24 32M22 22h20M24 32h16M20 42h24" stroke="%231d2a4a" stroke-width="4" stroke-linecap="round"/></svg>',
-  stethoscope: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%238cc8ff"/><path d="M20 16v14c0 7 5 12 12 12s12-5 12-12V16M32 42v10" stroke="%231d2a4a" stroke-width="4" fill="none"/><circle cx="32" cy="52" r="5" fill="%23ffc83d"/></svg>',
-  microscope: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%23ffc83d"/><path d="M24 48h16M32 48V36M32 24l8-8M24 24l12 12" stroke="%231d2a4a" stroke-width="4" stroke-linecap="round"/></svg>'
+  brain: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZjZiNTciLz48cGF0aCBkPSJNMjIgMjBjLTMgMC01IDItNSA1IDAgMiAxIDQgMyA1LTIgMS0zIDMtMyA1IDAgMyAyIDYgNiA2IDEgMCAyIDAgMy0xIDEgMyA0IDUgNyA1czYtMiA3LTVjMSAxIDIgMSAzIDEgNCAwIDYtMyA2LTYgMC0yLTEtNC0zLTUgMi0xIDMtMyAzLTUgMC0zLTItNS01LTUtMiAwLTQgMS01IDItMi0yLTUtMy04LTNzLTYgMS04IDNjLTEtMS0zLTItNS0yeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==',
+  dna: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM1ZmQzYTYiLz48cGF0aCBkPSJNMjAgMTZjNiA4IDE4IDI0IDI0IDMyTTQ0IDE2Yy02IDgtMTggMjQtMjQgMzJNMjIgMjJoMjBNMjQgMzJoMTZNMjAgNDJoMjQiIHN0cm9rZT0iIzFkMmE0YSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=',
+  stethoscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM4Y2M4ZmYiLz48cGF0aCBkPSJNMjAgMTZ2MTRjMCA3IDUgMTIgMTIgMTJzMTItNSAxMi0xMlYxNk0zMiA0MnYxMCIgc3Ryb2tlPSIjMWQyYTRhIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjUyIiByPSI1IiBmaWxsPSIjZmZjODNkIi8+PC9zdmdn',
+  microscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZmM4M2QiLz48cGF0aCBkPSJNMjQgNDhoMTZNMzIgNDhWMzZNMzIgMjRsOC04TTI0IDI0bDEyIDEyIiBzdHJva2U9IiMxZDJhNGEiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmdn'
 };
 
 var audioCtx = null;
@@ -91,8 +93,7 @@ function playSFX(type) {
     if (audioCtx.state === 'suspended') audioCtx.resume();
     var osc = audioCtx.createOscillator();
     var gain = audioCtx.createGain();
-    osc.connect(gain);
-    gain.connect(audioCtx.destination);
+    osc.connect(gain); gain.connect(audioCtx.destination);
     var now = audioCtx.currentTime;
 
     if (type === 'ok') {
@@ -112,8 +113,8 @@ function playSFX(type) {
       osc.type = 'square'; osc.frequency.setValueAtTime(800, now);
       gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
       osc.start(now); osc.stop(now + 0.04);
-    } else if (type === 'strike') {
-      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+    } else if (type === 'sabotage') {
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(100, now); osc.frequency.linearRampToValueAtTime(400, now + 0.3);
       gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
       osc.start(now); osc.stop(now + 0.3);
     }
@@ -224,7 +225,7 @@ function submitScoreToGlobal(finalScore){
   });
 }
 
-// LECTURE CONTENT - PROF. AUTIFI NEUROANATOMY
+// PROF. AUTIFI NEUROANATOMY QUESTIONS
 var S=[
 {n:"Stage 1: White Matter Fiber Classifier",d:"Analyze cerebral fiber bundles (Association, Commissural, Projection).",t:"mc",sec:10,q:[
 ["Which bundle connects the orbital gyri (in front) with the temporal pole (behind) across the stem of the lateral sulcus?",["Uncinate fasciculus","Cingulum","Superior longitudinal fasciculus"],0,"Uncinate fasciculus connects orbital gyri to temporal pole."],
@@ -233,22 +234,22 @@ var S=[
 ["Which of the following describes Projection Fibers?",["Interconnect identical cortical areas between left and right hemispheres","Interconnect different cortical regions in the SAME hemisphere","Connect the cerebral cortex with lower centers (thalamus, striatum, brainstem, spinal cord)"],2,"Projection fibers connect cortex to lower CNS centers."],
 ["Select ALL structures that represent Corticofugal (cortical efferent) projection fibers:",["Sensory radiation & Optic radiation","Pyramidal tract & Cortico-pontine fibers","Superior thalamic radiation"],1,"Corticofugal fibers carry efferents away from cortex (e.g., Pyramidal & Corticopontine)."]]
 },
-{n:"Stage 2: Topographical Anatomy & Commissures",d:"Master the anatomy of Corpus Callosum and Diencephalic Commissures.",t:"mc",sec:9,q:[
-["Which commissure connects the olfactory bulbs, piriform lobes, and amygdaloid bodies across the lamina terminalis?",["Anterior commissure","Posterior commissure","Habenular commissure"],0,"Anterior commissure connects olfactory structures and amygdaloid bodies."],
-["The Forceps Major is formed by fibers sweeping backwards from which part of the Corpus Callosum?",["Rostrum","Genu","Splenium"],2,"Splenium fibers sweep backwards to form Forceps Major into occipital poles."],
-["Which structure forms the roof and lateral wall of the posterior horn of the lateral ventricle?",["Forceps Minor","Tapetum","Corona Radiata"],1,"Tapetum (from splenium) forms roof/lateral wall of posterior and inferior horns."],
+{n:"Stage 2: Topographical Anatomy & 3D Trajectories",d:"Master 3D spatial alignment of the Internal Capsule limbs.",t:"mc",sec:9,q:[
+["Corticonuclear (corticobulbar) fibers for head and neck motor control traverse through which specific part of the internal capsule?",["Anterior limb","Genu","Posterior limb"],1,"Genu contains corticonuclear/corticobulbar motor fibers for head & neck."],
+["What is the precise anterior-to-posterior somatotopic organization of the Corticospinal tract in the Posterior Limb?",["Lower limb → Trunk → Upper limb","Upper limb → Trunk → Lower limb","Trunk → Upper limb → Lower limb"],1,"Corticospinal fibers in the posterior limb are arranged front-to-back: Upper limb → Trunk → Lower limb."],
+["Which pathway traverses the Retrolentiform part versus the Sublentiform part of the internal capsule?",["Retrolentiform = Optic radiation | Sublentiform = Auditory radiation","Retrolentiform = Auditory radiation | Sublentiform = Optic radiation","Both carry Corticospinal fibers"],0,"Retrolentiform contains Optic radiation; Sublentiform contains Auditory radiation."],
 ["Where does the Posterior Commissure cross the median plane?",["Upper part of lamina terminalis","Stalk of the pineal gland, above the cerebral aqueduct","Between the two crura of the fornix"],1,"Posterior commissure crosses in pineal stalk above aqueduct, connecting pretectal nuclei."],
 ["The Rostrum of the corpus callosum extends downwards and backwards from the genu to the:",["Upper end of lamina terminalis","Pineal body","Anterior perforated substance"],0,"Rostrum extends to the upper end of lamina terminalis."]]
 },
-{n:"Stage 3: Internal Capsule & Angiology",d:"Precision mapping of internal capsule limbs and arterial blood supply.",t:"mc",sec:8,q:[
-["Which fiber tracts traverse the GENU of the Internal Capsule?",["Corticospinal fibers for lower limb","Corticonuclear / Corticobulbar fibers (head and neck)","Auditory radiation & Temporopontine fibers"],1,"Genu contains Corticonuclear (corticobulbar) motor fibers."],
-["Which structure separates the Lentiform Nucleus from the Thalamus and Caudate Nucleus?",["External capsule","Claustrum","Internal capsule (Posterior & Anterior limbs)"],2,"Internal capsule separates lentiform nucleus medially from caudate and thalamus."],
-["A stroke in Charcot's Artery (Artery of Cerebral Haemorrhage) affects a branch of which artery?",["Anterior Cerebral Artery (ACA)","Middle Cerebral Artery (MCA)","Posterior Cerebral Artery (PCA)"],1,"Charcot's artery is a lateral striate branch of the Middle Cerebral Artery."],
-["The Sublentiform part of the internal capsule contains which pathway?",["Auditory radiation & Temporo-pontine fibers","Optic radiation & Parieto-pontine fibers","Anterior thalamic radiation"],0,"Sublentiform part carries Auditory radiation and temporo-pontine fibers."],
-["Recurrent Artery of Heubner supplies which region of the internal capsule?",["Posterior limb","Genu","Retrolentiform part"],1,"Recurrent artery of Heubner supplies the Genu (along with direct ICA branches)."]]
+{n:"Stage 3: Angiology & Clinical Stroke Syndromes",d:"Map arterial supply & Charcot's versus Heubner's artery strokes.",t:"mc",sec:8,q:[
+["Charcot's Artery (Artery of Cerebral Haemorrhage) is a lateral striate branch of which vessel and causes what primary syndrome?",["Anterior Cerebral Artery (ACA) → Pure sensory loss","Middle Cerebral Artery (MCA) → Capsular Hemiplegia","Posterior Cerebral Artery (PCA) → Cortical blindness"],1,"Charcot's artery is a lateral striate branch of MCA and is the primary culprit in capsular hemiplegia."],
+["Which artery is a branch of the Anterior Cerebral Artery (ACA) supplying the Genu and Anterior Limb of the internal capsule?",["Recurrent Artery of Heubner","Charcot's Artery","Anterior Choroidal Artery"],0,"Recurrent Artery of Heubner arises from ACA to supply the genu and anterior limb."],
+["The Posterior Limb of the internal capsule receives its arterial supply from:",["Lateral striate MCA branches & Anterior Choroidal Artery","Medial striate ACA branches only","Posterior Communicating Artery only"],0,"Posterior limb is supplied by MCA lateral striate branches and the Anterior Choroidal Artery."],
+["A stroke affecting the Superior Thalamic Radiation in the posterior limb leads to:",["Loss of all somatosensory sensations on the OPPOSITE side of the body & face","Ipsilateral loss of pain and temperature only","Pure motor paralysis without sensory deficits"],0,"Superior thalamic radiation damage causes contralateral loss of all somatosensory sensations."],
+["The Sublentiform part of the internal capsule contains which pathway?",["Auditory radiation & Temporo-pontine fibers","Optic radiation & Parieto-pontine fibers","Anterior thalamic radiation"],0,"Sublentiform part carries Auditory radiation and temporo-pontine fibers."]]
 },
-{n:"Stage 4: Basal Ganglia Circuitry & Morphology",d:"Deep nuclei taxonomy, striatum connections, and extrapyramidal pathways.",t:"mc",sec:8,q:[
-["Which two nuclei collectively form the Neostriatum (receptive center of corpus striatum)?",["Caudate nucleus & Putamen","Putamen & Globus pallidus","Globus pallidus & Subthalamic nucleus"],0,"Neostriatum = Caudate nucleus + Putamen."],
+{n:"Stage 4: Basal Ganglia Circuitry & Morphology",d:"Deep nuclei taxonomy, Neostriatum inputs, and efferent outputs.",t:"mc",sec:8,q:[
+["Which two structures form the Neostriatum, and what is its primary physiological role?",["Caudate nucleus & Putamen → Receptive input hub","Putamen & Globus pallidus → Efferent outflow center","Globus pallidus & Subthalamic nucleus → Autonomic control"],0,"Neostriatum = Caudate + Putamen, functioning as the receptive input hub (from cortex & thalamus)."],
 ["Which statement correctly distinguishes the Putamen from the Globus Pallidus?",["Putamen is medial and pale; Globus pallidus is lateral and dark","Putamen is lateral and dark; Globus pallidus is medial and pale (Paleostriatum)","Both form the archistriatum"],1,"Putamen is dark & lateral; Globus pallidus is pale & medial (Paleostriatum)."],
 ["The output (efferent) center sending fibers to thalamus, red nucleus, and substantia nigra is:",["Neostriatum","Globus Pallidus","Claustrum"],1,"Globus pallidus is the primary outflow/efferent center of the corpus striatum."],
 ["The tail of the Caudate Nucleus terminates anteriorly by fusing with which structure?",["Subthalamic nucleus","Amygdaloid body (Amygdala)","Thalamic pulvinar"],1,"Tail of caudate runs in roof of inferior horn and fuses with Amygdaloid body."],
@@ -303,12 +304,26 @@ function hudUp(){
 }
 
 function powerBar(){
-  if(MODE==="duel") return '';
+  if(MODE==="duel") {
+    // Sabotage Power-up for Duels
+    return '<div class="pwr-bar"><button class="pwr-btn" onclick="sendSabotage()" '+(streak<3?'disabled':'')+'>💣 Ink Sabotage (3 Streak Required)</button></div>';
+  }
   return '<div class="pwr-bar">'+
     '<button class="pwr-btn" onclick="usePwr(\'heart\')" '+(items.heart<=0||hearts>=3?'disabled':'')+'>❤️ +1 ('+items.heart+')</button>'+
     '<button class="pwr-btn" onclick="usePwr(\'freeze\')" '+(items.freeze<=0?'disabled':'')+'>⏱️ +5s ('+items.freeze+')</button>'+
     '<button class="pwr-btn" onclick="usePwr(\'double\')" '+(items.double<=0||doubleCoinActive?'disabled':'')+'>🪙 2x ('+(doubleCoinActive?'ON':items.double)+')</button>'+
   '</div>';
+}
+
+function sendSabotage(){
+  if(MODE==="duel" && duelRef && streak>=3){
+    streak=0;
+    var oppKey = Object.keys(allPlayersInRoom).find(k => k !== playerId);
+    if(oppKey){
+      duelRef.child(oppKey).update({ sabotage: Date.now() });
+      playSFX('sabotage');
+    }
+  }
 }
 
 function usePwr(type){
@@ -361,13 +376,29 @@ function title(){
  g.innerHTML=streakBonusHtml+'<h1>Neuroanatomy Challenge 🧠</h1><p>Master White Matter, Internal Capsule & Basal Nuclei (Prof. Autifi Lecture)!</p>'+
  '<div class="row">'+
  '<button class="btn" id="go">Play Challenge</button>'+
+ '<button class="btn" id="surv" style="background:var(--cor);color:#fff;">⚡ Survival Mode</button>'+
  '<button class="btn" id="shp" style="background:var(--mint)">🛍️ Shop</button>'+
  '<button class="btn" id="dl">⚔️ 1v1 Duel</button>'+
  '</div><div class="lb" id="lb"></div>';
- document.getElementById("go").onclick=function(){hearts=3;score=0;streak=0;si=0;missedQuestions=[];intro()};
+ document.getElementById("go").onclick=function(){MODE="solo";hearts=3;score=0;streak=0;si=0;missedQuestions=[];intro()};
+ document.getElementById("surv").onclick=startSurvivalMode;
  document.getElementById("shp").onclick=openShop;
  document.getElementById("dl").onclick=duelMenu;
  drawLB();
+}
+
+function startSurvivalMode(){
+  MODE = "survival"; hearts = 1; score = 0; streak = 0; si = 0; missedQuestions = [];
+  g.className = "card";
+  g.innerHTML = '<h2>⚡ Sudden Death Survival</h2><p>One heart. 4 seconds per question. Endless pressure!</p><button class="btn" id="go">Begin Sudden Death</button>';
+  document.getElementById("go").onclick = function(){
+    // Flatten all questions for fast round
+    var allQ = [];
+    S.forEach(s => s.q.forEach(q => allQ.push(q)));
+    S[0].o = shuf(allQ);
+    qi = 0;
+    showQ();
+  };
 }
 
 function openShop(){
@@ -434,7 +465,7 @@ function joinDuelRoom(code){
   ROOM_CODE = code; MODE = "duel"; PH = "lobby"; myReadyState = false; allPlayersInRoom = {};
   duelRef = db.ref("rooms/" + code);
   
-  duelRef.child(playerId).set({ name: playerName, avatar: currentAvatar, ready: false, score: 0, hearts: 3, stage: 0, done: false });
+  duelRef.child(playerId).set({ name: playerName, avatar: currentAvatar, ready: false, score: 0, hearts: 3, stage: 0, done: false, sabotage: 0 });
   duelRef.child(playerId).onDisconnect().remove();
 
   duelRef.on("value", function(snap){
@@ -442,6 +473,13 @@ function joinDuelRoom(code){
     var keys = Object.keys(allPlayersInRoom);
     var oppKey = keys.find(k => k !== playerId);
     var opponentData = oppKey ? allPlayersInRoom[oppKey] : null;
+    var myData = allPlayersInRoom[playerId];
+
+    // Check if I got sabotaged by opponent
+    if(myData && myData.sabotage && myData.sabotage > (window.lastSabotageSeen||0)){
+      window.lastSabotageSeen = myData.sabotage;
+      triggerSabotageOverlay();
+    }
 
     if(PH === "lobby") drawDuelLobby(opponentData);
     else if(PH === "play") updateOpponentHUD(opponentData);
@@ -452,6 +490,15 @@ function joinDuelRoom(code){
       updateOpponentHUD(opponentData); intro();
     }
   });
+}
+
+function triggerSabotageOverlay(){
+  playSFX('sabotage');
+  var ink = document.createElement("div");
+  ink.className = "ink-overlay";
+  ink.innerHTML = "<div>💣 INK SABOTAGE!</div><small>Opponent blinded your screen!</small>";
+  g.appendChild(ink);
+  setTimeout(function(){ if(ink.parentNode) ink.parentNode.removeChild(ink); }, 2500);
 }
 
 function drawDuelLobby(opponentData){
@@ -476,7 +523,7 @@ function intro(){
  hudUp();var s=S[si];g.className="card";
  doubleCoinActive=false;
  if(si === 4) bossHP = 100;
- g.innerHTML='<h2>'+s.n+'</h2><p>'+s.d+'</p><p><b>⏱️ '+s.sec+' seconds per question.</b></p><button class="btn" id="go">Start Stage</button>';
+ g.innerHTML='<h2>'+s.n+'</h2><p>'+s.d+'</p><p><b>⏱️ '+(MODE==="survival"?4:s.sec)+' seconds per question.</b></p><button class="btn" id="go">Start Stage</button>';
  document.getElementById("go").onclick=function(){qi=0;s.o=shuf(s.q.slice());showQ()};
 }
 
@@ -496,14 +543,14 @@ function bar(n,t){return '<div class="bar"><i style="width:'+(n/t*100)+'%"></i><
 
 function showQ(){
  var s=S[si],q=s.o[qi];locked=false;hudUp();
- var bossHtml = si === 4 ? '<div class="boss-box"><b>👾 Dr. Inhibitor (Clinical Cases)</b><div class="boss-hp"><i style="width:'+bossHP+'%"></i></div></div>' : '';
+ var bossHtml = (si === 4 && MODE!=="survival") ? '<div class="boss-box"><b>👾 Dr. Inhibitor (Clinical Cases)</b><div class="boss-hp"><i style="width:'+bossHP+'%"></i></div></div>' : '';
  var h=bossHtml+bar(qi,s.o.length)+'<div id="pwr-container">'+powerBar()+'</div>'+tbar()+'<div class="q">'+q[0]+'</div>';
  
  var arr = [0,1,2]; shuf(arr);
  arr.forEach(function(k){h+='<button class="opt" data-k="'+k+'">'+q[1][k]+'</button>'});
  g.innerHTML=h+'<div class="fb" aria-live="polite"></div>';
  g.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){pick(+b.dataset.k,b)}});
- startT(s.sec,function(){pick(-1)});
+ startT(MODE==="survival"?4:s.sec,function(){pick(-1)});
 }
 
 function pick(k,b){
@@ -511,13 +558,12 @@ function pick(k,b){
  g.querySelectorAll(".opt").forEach(function(x){if(+x.dataset.k===q[2])x.classList.add("ok")});
  if(k===q[2]){
    var p=ok();
-   if(si === 4) { bossHP = Math.max(0, bossHP - 25); playSFX('strike'); }
+   if(si === 4 && MODE!=="survival") { bossHP = Math.max(0, bossHP - 25); playSFX('strike'); }
    fb.textContent="✅ +"+p+" pts (+"+(doubleCoinActive?10:5)+" 🪙). "+q[3];
  }
  else{
    if(b)b.classList.add("no");
    fb.textContent=(k<0?"⏰ Time's up! ":"❌ ")+q[3];
-   // Log missed question for review screen
    missedQuestions.push({ question: q[0], correctAnswer: q[1][q[2]], explanation: q[3] });
    dead=bad();
  }
@@ -527,7 +573,7 @@ function pick(k,b){
 
 function stageDone(){
  stopT();si++;addCoins(25);saveState();
- if(si>=S.length)return win();
+ if(si>=S.length || MODE==="survival")return win();
  g.innerHTML='<h2>Stage Clear! 🧠</h2><p>Score: '+score+'. Hearts remaining: '+hearts+'.</p><p>Stage Bonus: <b>+'+(doubleCoinActive?50:25)+' Coins 🪙</b></p><button class="btn" id="go">Next Stage</button>';
  document.getElementById("go").onclick=intro;
 }
@@ -545,7 +591,7 @@ function win(){
    drawDuelEnd(oppKey ? allPlayersInRoom[oppKey] : null);
    return;
  }
- g.innerHTML='<p class="big">'+score+'</p><h2>Master of Neuroanatomy 🏆</h2><p>Dr. Inhibitor defeated! Bonus +'+bonus+' pts & +50 🪙.'+(isNewBest?' <b>New High Score! 🎉</b>':'')+'</p><div class="row"><button class="btn" id="go">Play Again</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div><div class="lb" id="lb"></div>';
+ g.innerHTML='<p class="big">'+score+'</p><h2>Master of Neuroanatomy 🏆</h2><p>Run Complete! Bonus +'+bonus+' pts & +50 🪙.'+(isNewBest?' <b>New High Score! 🎉</b>':'')+'</p><div class="row"><button class="btn" id="go">Play Again</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div><div class="lb" id="lb"></div>';
  document.getElementById("go").onclick=title;
  document.getElementById("rev").onclick=drawMistakesReview;
  drawLB();
