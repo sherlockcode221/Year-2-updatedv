@@ -571,21 +571,28 @@ function over(){
 
 function drawMistakesReview(){
   stopT();
-  g.className="card";
+  hud.hidden = true;
+  OP.hidden = true;
+  g.className = "card";
+  
   if(missedQuestions.length === 0){
-    g.innerHTML='<h2>Flawless Performance! 🎉</h2><p>You answered every single question correctly this run!</p><button class="btn" onclick="title()">Main Menu</button>';
+    g.innerHTML = '<h2>Flawless Performance! 🎉</h2><p>You answered every single question correctly this run!</p><button class="btn" id="mmenu">Main Menu</button>';
+    document.getElementById("mmenu").onclick = title;
     return;
   }
-  var h='<h2>📝 Mistakes Review ('+missedQuestions.length+')</h2><div style="max-height:320px; overflow-y:auto; margin:12px 0;">';
+  
+  var h = '<h2>📝 Mistakes Review (' + missedQuestions.length + ')</h2><div style="max-height:320px; overflow-y:auto; margin:12px 0;">';
   missedQuestions.forEach(function(item, idx){
-    h+='<div class="review-item">'+
-      '<b>Q'+(idx+1)+': '+esc(item.question)+'</b><br>'+
-      '<span style="color:var(--mint)">✅ <b>Correct Answer:</b> '+esc(item.correctAnswer)+'</span><br>'+
-      '<small>💡 <i>'+esc(item.explanation)+'</i></small>'+
+    h += '<div class="review-item">' +
+      '<b>Q' + (idx + 1) + ': ' + esc(item.question) + '</b><br>' +
+      '<span style="color:var(--mint)">✅ <b>Correct Answer:</b> ' + esc(item.correctAnswer) + '</span><br>' +
+      '<small>💡 <i>' + esc(item.explanation) + '</i></small>' +
     '</div>';
   });
-  h+='</div><button class="btn" onclick="title()">Main Menu</button>';
-  g.innerHTML=h;
+  h += '</div><button class="btn" id="mmenu">Main Menu</button>';
+  g.innerHTML = h;
+  
+  document.getElementById("mmenu").onclick = title;
 }
 
 function drawDuelEnd(opponentData){
