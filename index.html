@@ -33,9 +33,6 @@ p{margin:6px 0}
 .btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 button:focus-visible{outline:3px solid var(--cor);outline-offset:2px}
-.opt{display:block;width:100%;text-align:left;font:inherit;font-weight:600;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;line-height:1.35}
-.opt.ok{background:var(--mint);color:#10301f}
-.opt.no{background:var(--cor);color:#2a0a05}
 .q{font-weight:800;font-size:1.1rem;margin:8px 0}
 .fb{min-height:3em;font-weight:600;margin:8px 0}
 .big{font-size:2.6rem;font-weight:800;margin:0}
@@ -47,7 +44,7 @@ button:focus-visible{outline:3px solid var(--cor);outline-offset:2px}
 .lb li{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:700}
 .lb li.me{background:var(--yel);color:#1d2a4a}
 .lb li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
-input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;padding:10px;border:3px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:8px 0}
+input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;padding:12px;border:3px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:8px 0}
 .row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
 .pwr-bar{display:flex;gap:6px;margin:10px 0}
 .pwr-btn{flex:1;padding:6px;font-size:.85rem;background:var(--bg);border:2px solid var(--line);border-radius:10px;font-weight:800;cursor:pointer;color:var(--ink)}
@@ -61,7 +58,6 @@ input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;pad
 .boss-hp i{display:block;height:100%;background:var(--cor);width:100%;transition:width .4s}
 .avatar-img{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:#fff;display:inline-block;vertical-align:middle;object-fit:cover;flex-shrink:0;}
 .review-item{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;text-align:left}
-/* Sabotage Ink Overlay */
 .ink-overlay{position:absolute;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.92);color:#fff;display:flex;flex-direction:column;justify-content:center;align-items:center;z-content:99;border-radius:18px;font-weight:800;font-size:1.4rem;animation:fadeIn 0.2s;}
 @keyframes fadeIn{from{opacity:0}to{opacity:1}}
 </style>
@@ -78,9 +74,8 @@ input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;pad
 <div class="card" id="g"></div>
 </main>
 <script>
-// Base64 Encoded SVG Images (Guaranteed to render cleanly everywhere)
 var AVATARS = {
-  brain: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZjZiNTciLz48cGF0aCBkPSJNMjIgMjBjLTMgMC01IDItNSA1IDAgMiAxIDQgMyA1LTIgMS0zIDMtMyA1IDAgMyAyIDYgNiA2IDEgMCAyIDAgMy0xIDEgMyA0IDUgNyA1czYtMiA3LTVjMSAxIDIgMSAzIDEgNCAwIDYtMyA2LTYgMC0yLTEtNC0zLTUgMi0xIDMtMyAzLTUgMC0zLTItNS01LTUtMiAwLTQgMS01IDItMi0yLTUtMy04LTNzLTYgMS04IDNjLTEtMS0zLTItNS0yeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==',
+  brain: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZjZiNTciLz48cGF0aCBkPSJNMjIgMjBjLTMgMC01IDItNSA1IDAgMiAxIDQgMyA1LTIgMS0zIDMtMyA1IDAgMyAyIDYgNiA2IDEgMCAyIDAgMy0xIDEgMyA4IDUgNyA1czYtMiA3LTVjMSAxIDIgMSAzIDEgNCAwIDYtMyA2LTYgMC0yLTEtNC0zLTUgMi0xIDMtMyAzLTUgMC0zLTItNS01LTUtMiAwLTQgMS01IDItMi0yLTUtMy04LTNzLTYgMS04IDNjLTEtMS0zLTItNS0yeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==',
   dna: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM1ZmQzYTYiLz48cGF0aCBkPSJNMjAgMTZjNiA4IDE4IDI0IDI0IDMyTTQ0IDE2Yy02IDgtMTggMjQtMjQgMzJNMjIgMjJoMjBNMjQgMzJoMTZNMjAgNDJoMjQiIHN0cm9rZT0iIzFkMmE0YSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=',
   stethoscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM4Y2M4ZmYiLz48cGF0aCBkPSJNMjAgMTZ2MTRjMCA3IDUgMTIgMTIgMTJzMTItNSAxMi0xMlYxNk0zMiA0MnYxMCIgc3Ryb2tlPSIjMWQyYTRhIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjUyIiByPSI1IiBmaWxsPSIjZmZjODNkIi8+PC9zdmdn',
   microscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZmM4M2QiLz48cGF0aCBkPSJNMjQgNDhoMTZNMzIgNDhWMzZNMzIgMjRsOC04TTI0IDI0bDEyIDEyIiBzdHJva2U9IiMxZDJhNGEiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmdn'
@@ -225,42 +220,42 @@ function submitScoreToGlobal(finalScore){
   });
 }
 
-// PROF. AUTIFI NEUROANATOMY QUESTIONS
+// PROF. AUTIFI NEUROANATOMY QUESTIONS - SHORT ANSWER MODE WITH INCREASED TIMERS
 var S=[
-{n:"Stage 1: White Matter Fiber Classifier",d:"Analyze cerebral fiber bundles (Association, Commissural, Projection).",t:"mc",sec:10,q:[
-["Which bundle connects the orbital gyri (in front) with the temporal pole (behind) across the stem of the lateral sulcus?",["Uncinate fasciculus","Cingulum","Superior longitudinal fasciculus"],0,"Uncinate fasciculus connects orbital gyri to temporal pole."],
-["Which statement regarding the Arcuate Fasciculus is TRUE?",["It connects the two cerebral hemispheres directly","It connects Broca's and Wernicke's language areas in the dominant hemisphere","It connects the optic chiasm to the visual cortex"],1,"Arcuate fasciculus is a short association subset connecting major language areas."],
-["Which fiber bundle runs in the cingulate gyrus and connects it to the hippocampus?",["Cingulum","Fronto-occipital fasciculus","Inferior longitudinal fasciculus"],0,"Cingulum runs inside the cingulate gyrus to the hippocampus."],
-["Which of the following describes Projection Fibers?",["Interconnect identical cortical areas between left and right hemispheres","Interconnect different cortical regions in the SAME hemisphere","Connect the cerebral cortex with lower centers (thalamus, striatum, brainstem, spinal cord)"],2,"Projection fibers connect cortex to lower CNS centers."],
-["Select ALL structures that represent Corticofugal (cortical efferent) projection fibers:",["Sensory radiation & Optic radiation","Pyramidal tract & Cortico-pontine fibers","Superior thalamic radiation"],1,"Corticofugal fibers carry efferents away from cortex (e.g., Pyramidal & Corticopontine)."]]
+{n:"Stage 1: White Matter Fiber Classifier",d:"Type the exact name of the fiber bundle.",t:"sa",sec:30,q:[
+["Which fiber bundle connects the orbital gyri (in front) with the temporal pole across the stem of the lateral sulcus?","uncinate fasciculus","Uncinate fasciculus connects orbital gyri to temporal pole."],
+["Which subset of fibers connects Broca's and Wernicke's language areas in the dominant hemisphere?","arcuate fasciculus","Arcuate fasciculus is a short association subset connecting major language areas."],
+["Which long association fiber bundle runs inside the cingulate gyrus to the hippocampus?","cingulum","Cingulum runs inside the cingulate gyrus to the hippocampus."],
+["Fiber category that connects the cerebral cortex to lower centers like thalamus and spinal cord?","projection fibers","Projection fibers connect cortex to lower CNS centers."],
+["Tract carrying voluntary motor fibers away from cortex through internal capsule?","pyramidal tract","Pyramidal tract is a corticofugal efferent motor pathway."]]
 },
-{n:"Stage 2: Topographical Anatomy & 3D Trajectories",d:"Master 3D spatial alignment of the Internal Capsule limbs.",t:"mc",sec:9,q:[
-["Corticonuclear (corticobulbar) fibers for head and neck motor control traverse through which specific part of the internal capsule?",["Anterior limb","Genu","Posterior limb"],1,"Genu contains corticonuclear/corticobulbar motor fibers for head & neck."],
-["What is the precise anterior-to-posterior somatotopic organization of the Corticospinal tract in the Posterior Limb?",["Lower limb → Trunk → Upper limb","Upper limb → Trunk → Lower limb","Trunk → Upper limb → Lower limb"],1,"Corticospinal fibers in the posterior limb are arranged front-to-back: Upper limb → Trunk → Lower limb."],
-["Which pathway traverses the Retrolentiform part versus the Sublentiform part of the internal capsule?",["Retrolentiform = Optic radiation | Sublentiform = Auditory radiation","Retrolentiform = Auditory radiation | Sublentiform = Optic radiation","Both carry Corticospinal fibers"],0,"Retrolentiform contains Optic radiation; Sublentiform contains Auditory radiation."],
-["Where does the Posterior Commissure cross the median plane?",["Upper part of lamina terminalis","Stalk of the pineal gland, above the cerebral aqueduct","Between the two crura of the fornix"],1,"Posterior commissure crosses in pineal stalk above aqueduct, connecting pretectal nuclei."],
-["The Rostrum of the corpus callosum extends downwards and backwards from the genu to the:",["Upper end of lamina terminalis","Pineal body","Anterior perforated substance"],0,"Rostrum extends to the upper end of lamina terminalis."]]
+{n:"Stage 2: Topographical Anatomy & 3D Trajectories",d:"Type the specific anatomical region or structure.",t:"sa",sec:28,q:[
+["Which part of the internal capsule carries Corticonuclear (corticobulbar) motor fibers for head & neck?","genu","Genu contains corticonuclear motor fibers."],
+["What is the front-to-back sequence of motor ordering in the Posterior Limb? (Format: Upper -> Trunk -> Lower)","upper limb -> trunk -> lower limb","Corticospinal fibers in posterior limb are arranged: Upper limb -> Trunk -> Lower limb."],
+["Which part of the internal capsule contains the Optic Radiation?","retrolentiform part","Retrolentiform part carries optic radiation."],
+["Which part of the internal capsule contains the Auditory Radiation?","sublentiform part","Sublentiform part carries auditory radiation."],
+["In which structure does the Posterior Commissure cross above the cerebral aqueduct?","pineal gland stalk","Posterior commissure crosses in the stalk of the pineal gland."]]
 },
-{n:"Stage 3: Angiology & Clinical Stroke Syndromes",d:"Map arterial supply & Charcot's versus Heubner's artery strokes.",t:"mc",sec:8,q:[
-["Charcot's Artery (Artery of Cerebral Haemorrhage) is a lateral striate branch of which vessel and causes what primary syndrome?",["Anterior Cerebral Artery (ACA) → Pure sensory loss","Middle Cerebral Artery (MCA) → Capsular Hemiplegia","Posterior Cerebral Artery (PCA) → Cortical blindness"],1,"Charcot's artery is a lateral striate branch of MCA and is the primary culprit in capsular hemiplegia."],
-["Which artery is a branch of the Anterior Cerebral Artery (ACA) supplying the Genu and Anterior Limb of the internal capsule?",["Recurrent Artery of Heubner","Charcot's Artery","Anterior Choroidal Artery"],0,"Recurrent Artery of Heubner arises from ACA to supply the genu and anterior limb."],
-["The Posterior Limb of the internal capsule receives its arterial supply from:",["Lateral striate MCA branches & Anterior Choroidal Artery","Medial striate ACA branches only","Posterior Communicating Artery only"],0,"Posterior limb is supplied by MCA lateral striate branches and the Anterior Choroidal Artery."],
-["A stroke affecting the Superior Thalamic Radiation in the posterior limb leads to:",["Loss of all somatosensory sensations on the OPPOSITE side of the body & face","Ipsilateral loss of pain and temperature only","Pure motor paralysis without sensory deficits"],0,"Superior thalamic radiation damage causes contralateral loss of all somatosensory sensations."],
-["The Sublentiform part of the internal capsule contains which pathway?",["Auditory radiation & Temporo-pontine fibers","Optic radiation & Parieto-pontine fibers","Anterior thalamic radiation"],0,"Sublentiform part carries Auditory radiation and temporo-pontine fibers."]]
+{n:"Stage 3: Angiology & Clinical Stroke Syndromes",d:"Identify the clinical arteries and stroke origins.",t:"sa",sec:25,q:[
+["Name the lateral striate branch of Middle Cerebral Artery responsible for capsular hemiplegia:","charcot's artery","Charcot's artery (artery of cerebral haemorrhage) arises from MCA."],
+["Which vessel is a branch of ACA supplying the genu and anterior limb of internal capsule?","recurrent artery of heubner","Recurrent artery of Heubner arises from ACA."],
+["A stroke damaging the Superior Thalamic Radiation in the posterior limb causes loss of what on opposite side?","somatosensory sensations","Superior thalamic radiation carries contralateral sensory fibers."],
+["Besides MCA lateral striate branches, which artery supplies the posterior limb?","anterior choroidal artery","Anterior choroidal artery supplies posterior limb."],
+["Which major cerebral artery gives rise to Charcot's Artery?","middle cerebral artery","Charcot's artery is a branch of Middle Cerebral Artery (MCA)."]]
 },
-{n:"Stage 4: Basal Ganglia Circuitry & Morphology",d:"Deep nuclei taxonomy, Neostriatum inputs, and efferent outputs.",t:"mc",sec:8,q:[
-["Which two structures form the Neostriatum, and what is its primary physiological role?",["Caudate nucleus & Putamen → Receptive input hub","Putamen & Globus pallidus → Efferent outflow center","Globus pallidus & Subthalamic nucleus → Autonomic control"],0,"Neostriatum = Caudate + Putamen, functioning as the receptive input hub (from cortex & thalamus)."],
-["Which statement correctly distinguishes the Putamen from the Globus Pallidus?",["Putamen is medial and pale; Globus pallidus is lateral and dark","Putamen is lateral and dark; Globus pallidus is medial and pale (Paleostriatum)","Both form the archistriatum"],1,"Putamen is dark & lateral; Globus pallidus is pale & medial (Paleostriatum)."],
-["The output (efferent) center sending fibers to thalamus, red nucleus, and substantia nigra is:",["Neostriatum","Globus Pallidus","Claustrum"],1,"Globus pallidus is the primary outflow/efferent center of the corpus striatum."],
-["The tail of the Caudate Nucleus terminates anteriorly by fusing with which structure?",["Subthalamic nucleus","Amygdaloid body (Amygdala)","Thalamic pulvinar"],1,"Tail of caudate runs in roof of inferior horn and fuses with Amygdaloid body."],
-["Which thin gray matter sheet is situated between the External Capsule and Insula?",["Claustrum","Internal Capsule","Lamina terminalis"],0,"Claustrum is separated from lentiform nucleus by external capsule and is related laterally to insula."]]
+{n:"Stage 4: Basal Ganglia Circuitry & Morphology",d:"Type the correct deep nuclei taxonomy terms.",t:"sa",sec:25,q:[
+["Which two nuclei collectively form the Neostriatum? (Format: Caudate and Putamen)","caudate and putamen","Neostriatum = Caudate nucleus + Putamen."],
+["Which nucleus serves as the primary outflow/efferent center of corpus striatum?","globus pallidus","Globus pallidus is the primary outflow center (Paleostriatum)."],
+["The dark, lateral part of the lentiform nucleus is called the:","putamen","Putamen is dark and lateral."],
+["The tail of Caudate Nucleus terminates by fusing with which limbic structure?","amygdaloid body","Tail of caudate fuses with amygdaloid body (amygdala)."],
+["Which thin gray matter sheet lies between the external capsule and insula?","claustrum","Claustrum lies between external capsule and insula."]]
 },
-{n:"Boss: Dr. Inhibitor (Neuro-Lesions)",d:"Solve critical clinical cases involving capsular hemiplegia and movement disorders!",t:"mc",sec:6,q:[
-["A patient suffers a massive hemorrhage in the posterior limb of the internal capsule. What is the expected clinical outcome?",["Contralateral hemiplegia and contralateral loss of all somatosensory sensations","Ipsilateral optic atrophy only","Muscle flaccidity with no sensory loss"],0,"Posterior limb lesion causes contralateral hemiplegia (pyramidal) and contralateral sensory loss (superior thalamic radiation)."],
-["Degeneration of basal ganglia circuits causing involuntary, jerky, irregular, nonrepetitive movements is called:",["Athetosis","Chorea","Hemiballismus"],1,"Chorea presents with rapid, jerky, irregular nonrepetitive movements."],
-["Which basal ganglia disorder presents with Resting Tremor, Rigidity, Bradykinesia, and Postural Instability?",["Parkinson's disease","Huntington's chorea","Hemiballismus"],0,"Parkinson's triad: tremor, rigidity, bradykinesia."],
-["Wild, violent flinging involuntary movements confined to ONE side of the body is termed:",["Athetosis","Hemiballismus","Chorea"],1,"Hemiballismus is unilateral violent flinging movement."],
-["Basal nuclei damage causes loss of automatic associated movements, which is exemplified by:",["Loss of knee jerk reflex","Absence of arm-swinging during walking or facial expression while talking","Hyperactive tendon reflexes"],1,"Basal ganglia control automatic associated movements like arm-swinging while walking."]]
+{n:"Boss: Dr. Inhibitor (Neuro-Lesions)",d:"Solve critical clinical syndromes under timed pressure!",t:"sa",sec:22,q:[
+["Hemorrhage in posterior limb causes motor paralysis termed contralateral:","hemiplegia","Posterior limb lesion causes contralateral hemiplegia."],
+["Involuntary, jerky, irregular, nonrepetitive movements caused by striatum damage is termed:","chorea","Chorea presents with rapid jerky nonrepetitive movements."],
+["Basal ganglia disease presenting with resting tremor, rigidity, and bradykinesia:","parkinson's disease","Parkinson's triad: tremor, rigidity, bradykinesia."],
+["Wild, violent flinging involuntary movements confined to ONE side of body is termed:","hemiballismus","Hemiballismus is violent unilateral flinging movement."],
+["During walking, basal ganglia damage causes loss of automatic arm:","swinging","Basal nuclei control automatic associated movements like arm-swinging."]]
 }
 ];
 
@@ -305,7 +300,6 @@ function hudUp(){
 
 function powerBar(){
   if(MODE==="duel") {
-    // Sabotage Power-up for Duels
     return '<div class="pwr-bar"><button class="pwr-btn" onclick="sendSabotage()" '+(streak<3?'disabled':'')+'>💣 Ink Sabotage (3 Streak Required)</button></div>';
   }
   return '<div class="pwr-bar">'+
@@ -373,10 +367,10 @@ function title(){
  var streakBonusHtml = showRewardModal ? '<div style="background:var(--card);padding:10px;border-radius:12px;margin-bottom:10px;border:2px solid var(--line)">🎁 <b>Daily Study Reward!</b> Day '+loginStreak+' streak! Claimed +'+(loginStreak*20)+' 🪙</div>' : '';
  if(showRewardModal) addCoins(loginStreak * 20);
 
- g.innerHTML=streakBonusHtml+'<h1>Neuroanatomy Challenge 🧠</h1><p>Master White Matter, Internal Capsule & Basal Nuclei (Prof. Autifi Lecture)!</p>'+
+ g.innerHTML=streakBonusHtml+'<h1>Neuroanatomy Challenge 🧠</h1><p>Type Short Answers! Master White Matter, Internal Capsule & Basal Nuclei (Prof. Autifi Lecture)!</p>'+
  '<div class="row">'+
  '<button class="btn" id="go">Play Challenge</button>'+
- '<button class="btn" id="surv" style="background:var(--cor);color:#fff;">⚡ Survival Mode</button>'+
+ '<button class="btn" id="surv" style="background:var(--cor);color:#fff;">⚡ Sudden Death</button>'+
  '<button class="btn" id="shp" style="background:var(--mint)">🛍️ Shop</button>'+
  '<button class="btn" id="dl">⚔️ 1v1 Duel</button>'+
  '</div><div class="lb" id="lb"></div>';
@@ -390,9 +384,8 @@ function title(){
 function startSurvivalMode(){
   MODE = "survival"; hearts = 1; score = 0; streak = 0; si = 0; missedQuestions = [];
   g.className = "card";
-  g.innerHTML = '<h2>⚡ Sudden Death Survival</h2><p>One heart. 4 seconds per question. Endless pressure!</p><button class="btn" id="go">Begin Sudden Death</button>';
+  g.innerHTML = '<h2>⚡ Sudden Death Survival</h2><p>One heart. 12 seconds per short-answer question. Maximum speed!</p><button class="btn" id="go">Begin Sudden Death</button>';
   document.getElementById("go").onclick = function(){
-    // Flatten all questions for fast round
     var allQ = [];
     S.forEach(s => s.q.forEach(q => allQ.push(q)));
     S[0].o = shuf(allQ);
@@ -475,7 +468,6 @@ function joinDuelRoom(code){
     var opponentData = oppKey ? allPlayersInRoom[oppKey] : null;
     var myData = allPlayersInRoom[playerId];
 
-    // Check if I got sabotaged by opponent
     if(myData && myData.sabotage && myData.sabotage > (window.lastSabotageSeen||0)){
       window.lastSabotageSeen = myData.sabotage;
       triggerSabotageOverlay();
@@ -523,7 +515,8 @@ function intro(){
  hudUp();var s=S[si];g.className="card";
  doubleCoinActive=false;
  if(si === 4) bossHP = 100;
- g.innerHTML='<h2>'+s.n+'</h2><p>'+s.d+'</p><p><b>⏱️ '+(MODE==="survival"?4:s.sec)+' seconds per question.</b></p><button class="btn" id="go">Start Stage</button>';
+ var timeAllowed = MODE==="survival" ? 12 : s.sec;
+ g.innerHTML='<h2>'+s.n+'</h2><p>'+s.d+'</p><p><b>⏱️ '+timeAllowed+' seconds per question.</b></p><button class="btn" id="go">Start Stage</button>';
  document.getElementById("go").onclick=function(){qi=0;s.o=shuf(s.q.slice());showQ()};
 }
 
@@ -541,34 +534,49 @@ function bad(){
 }
 function bar(n,t){return '<div class="bar"><i style="width:'+(n/t*100)+'%"></i></div>'}
 
+function checkShortAnswer(userStr, targetStr){
+  var u = userStr.trim().toLowerCase().replace(/[^a-z0-9 ]/g, "");
+  var t = targetStr.trim().toLowerCase().replace(/[^a-z0-9 ]/g, "");
+  if(u === t) return true;
+  if(t.length > 5 && u.length > 4 && (t.includes(u) || u.includes(t))) return true;
+  return false;
+}
+
 function showQ(){
  var s=S[si],q=s.o[qi];locked=false;hudUp();
  var bossHtml = (si === 4 && MODE!=="survival") ? '<div class="boss-box"><b>👾 Dr. Inhibitor (Clinical Cases)</b><div class="boss-hp"><i style="width:'+bossHP+'%"></i></div></div>' : '';
- var h=bossHtml+bar(qi,s.o.length)+'<div id="pwr-container">'+powerBar()+'</div>'+tbar()+'<div class="q">'+q[0]+'</div>';
+ var timeAllowed = MODE==="survival" ? 12 : s.sec;
  
- var arr = [0,1,2]; shuf(arr);
- arr.forEach(function(k){h+='<button class="opt" data-k="'+k+'">'+q[1][k]+'</button>'});
+ var h=bossHtml+bar(qi,s.o.length)+'<div id="pwr-container">'+powerBar()+'</div>'+tbar()+'<div class="q">'+q[0]+'</div>'+
+ '<input type="text" id="ansInput" placeholder="Type answer here..." autocomplete="off">'+
+ '<button class="btn" id="subBtn" style="width:100%;margin-top:6px;">Submit Answer</button>';
+ 
  g.innerHTML=h+'<div class="fb" aria-live="polite"></div>';
- g.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){pick(+b.dataset.k,b)}});
- startT(MODE==="survival"?4:s.sec,function(){pick(-1)});
+ var inp = document.getElementById("ansInput");
+ inp.focus();
+ inp.onkeyup = function(e){ if(e.key === "Enter") processSA(); };
+ document.getElementById("subBtn").onclick = processSA;
+ 
+ startT(timeAllowed, function(){ processSA(true); });
 }
 
-function pick(k,b){
+function processSA(isTimeout){
  if(locked)return;locked=true;stopT();var s=S[si],q=s.o[qi],fb=g.querySelector(".fb"),dead=false;
- g.querySelectorAll(".opt").forEach(function(x){if(+x.dataset.k===q[2])x.classList.add("ok")});
- if(k===q[2]){
+ var userAns = isTimeout ? "" : document.getElementById("ansInput").value;
+ var isCorrect = !isTimeout && checkShortAnswer(userAns, q[1]);
+
+ if(isCorrect){
    var p=ok();
    if(si === 4 && MODE!=="survival") { bossHP = Math.max(0, bossHP - 25); playSFX('strike'); }
-   fb.textContent="✅ +"+p+" pts (+"+(doubleCoinActive?10:5)+" 🪙). "+q[3];
+   fb.textContent="✅ Correct! +"+p+" pts (+"+(doubleCoinActive?10:5)+" 🪙). "+q[2];
  }
  else{
-   if(b)b.classList.add("no");
-   fb.textContent=(k<0?"⏰ Time's up! ":"❌ ")+q[3];
-   missedQuestions.push({ question: q[0], correctAnswer: q[1][q[2]], explanation: q[3] });
+   fb.textContent=(isTimeout ? "⏰ Time's up! " : "❌ Incorrect! ") + "Correct answer: " + q[1] + ". " + q[2];
+   missedQuestions.push({ question: q[0], correctAnswer: q[1], explanation: q[2] });
    dead=bad();
  }
  hudUp();if(dead)return;
- setTimeout(function(){qi++;if(qi>=s.o.length)stageDone();else showQ()},1800);
+ setTimeout(function(){qi++;if(qi>=s.o.length)stageDone();else showQ()},2200);
 }
 
 function stageDone(){
