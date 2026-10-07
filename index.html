@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Neuroanatomy: Basal Nuclei & Internal Capsule</title>
+<!-- Firebase SDKs for Global Leaderboard & Duels -->
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+<style>
+:root{--bg:#fff8ec;--ink:#1d2a4a;--card:#fff;--line:#1d2a4a;--yel:#ffc83d;--cor:#ff6b57;--mint:#5fd3a6;--sky:#8cc8ff;--mut:#5b6785;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#121a30;--ink:#fff4dc;--card:#1c2745;--line:#fff4dc;--mut:#a9b3d1}}
+:root[data-theme="dark"]{--bg:#121a30;--ink:#fff4dc;--card:#1c2745;--line:#fff4dc;--mut:#a9b3d1}
+:root[data-theme="cyberpunk"]{--bg:#0d0221;--ink:#00f0ff;--card:#190a38;--line:#ff007f;--yel:#ff007f;--cor:#ff003c;--mint:#00f0ff;--sky:#7000ff;--mut:#9a4bff}
+:root[data-theme="biohazard"]{--bg:#0b1d0e;--ink:#55ff55;--card:#132e17;--line:#33cc33;--yel:#33cc33;--cor:#ff3300;--mint:#55ff55;--sky:#1a5e22;--mut:#2f8537}
+:root[data-theme="gold"]{--bg:#1a1400;--ink:#ffe680;--card:#332900;--line:#ffd700;--yel:#ffd700;--cor:#ff4500;--mint:#ffe680;--sky:#806600;--mut:#b39700}
+
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;line-height:1.45;font-size:16px;transition:background .3s,color .3s}
+main{max-width:560px;margin:0 auto;padding:14px 14px 50px}
+.hud{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:10px;gap:6px;flex-wrap:wrap}
+.hud span{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap;font-size:.9rem;display:inline-flex;align-items:center;gap:4px}
+.card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:18px;box-shadow:6px 6px 0 var(--line);transition:transform .1s}
+.card.shake{animation:shake 0.3s ease-in-out}
+@keyframes shake { 0%{transform:translate(0,0)} 25%{transform:translate(-6px,0)} 50%{transform:translate(6px,0)} 75%{transform:translate(-6px,0)} 100%{transform:translate(0,0)} }
+.hero{background:var(--yel);color:#1d2a4a}
+h1{font-size:2.1rem;line-height:1.05;margin:0 0 8px;letter-spacing:-.02em}
+h2{margin:0 0 6px;font-size:1.3rem}
+p{margin:6px 0}
+.bar{height:10px;background:rgba(128,128,128,.25);border-radius:999px;overflow:hidden;margin:0 0 12px}
+.bar i{display:block;height:100%;background:var(--cor);transition:width .3s}
+.btn{font:inherit;font-weight:800;color:#1d2a4a;background:var(--yel);border:3px solid var(--line);border-radius:14px;padding:11px 18px;cursor:pointer;box-shadow:3px 3px 0 var(--line)}
+.btn:active{transform:translate(2px,2px);box-shadow:1px 1px 0 var(--line)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+button:focus-visible{outline:3px solid var(--cor);outline-offset:2px}
+.opt{display:block;width:100%;text-align:left;font:inherit;font-weight:600;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;line-height:1.35}
+.opt.ok{background:var(--mint);color:#10301f}
+.opt.no{background:var(--cor);color:#2a0a05}
+.q{font-weight:800;font-size:1.1rem;margin:8px 0}
+.fb{min-height:3em;font-weight:600;margin:8px 0}
+.big{font-size:2.6rem;font-weight:800;margin:0}
+.tbar{height:12px;background:rgba(128,128,128,.25);border-radius:999px;overflow:hidden;border:2px solid var(--line)}
+.tbar i{display:block;height:100%;width:100%;background:var(--mint)}
+.tc{text-align:right;font-weight:800;font-size:.9rem;margin:2px 0 6px}
+.lb{margin-top:18px}
+.lb ol{list-style:none;margin:8px 0 0;padding:0}
+.lb li{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:700}
+.lb li.me{background:var(--yel);color:#1d2a4a}
+.lb li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
+input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;padding:10px;border:3px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:8px 0}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.pwr-bar{display:flex;gap:6px;margin:10px 0}
+.pwr-btn{flex:1;padding:6px;font-size:.85rem;background:var(--bg);border:2px solid var(--line);border-radius:10px;font-weight:800;cursor:pointer;color:var(--ink)}
+.pwr-btn:disabled{opacity:.4;cursor:not-allowed}
+.shop-item{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
+.shop-item div{text-align:left;display:flex;align-items:center;gap:8px}
+.opp{background:var(--sky);color:#10243f;border:2px solid var(--line);border-radius:12px;padding:6px 12px;margin-bottom:10px;font-weight:700;font-size:.9rem}
+.code{font-size:2.4rem;font-weight:800;letter-spacing:.25em;text-align:center;margin:10px 0}
+.boss-box{border:3px solid var(--cor);background:var(--bg);border-radius:14px;padding:10px;margin-bottom:12px;text-align:center}
+.boss-hp{height:16px;background:rgba(128,128,128,.3);border-radius:999px;overflow:hidden;border:2px solid var(--line);margin-top:4px}
+.boss-hp i{display:block;height:100%;background:var(--cor);width:100%;transition:width .4s}
+.avatar-img{width:28px;height:28px;border-radius:50%;border:2px solid var(--line);background:#fff;display:inline-block;vertical-align:middle;object-fit:cover}
+.review-item{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;text-align:left}
+</style>
+</head>
+<body>
+<main>
+<div class="hud" id="hud" hidden>
+  <span id="hh"></span>
+  <span id="ss"></span>
+  <span id="st"></span>
+  <span id="cc">🪙 0</span>
+</div>
+<div class="opp" id="op" hidden></div>
+<div class="card" id="g"></div>
+</main>
+<script>
+// Built-in Inline SVG Picture Avatars
+var AVATARS = {
+  brain: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%23ff6b57"/><path d="M22 20c-3 0-5 2-5 5 0 2 1 4 3 5-2 1-3 3-3 5 0 3 2 6 6 6 1 0 2 0 3-1 1 3 4 5 7 5s6-2 7-5c1 1 2 1 3 1 4 0 6-3 6-6 0-2-1-4-3-5 2-1 3-3 3-5 0-3-2-5-5-5-2 0-4 1-5 2-2-2-5-3-8-3s-6 1-8 3c-1-1-3-2-5-2z" fill="%23fff"/></svg>',
+  dna: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%235fd3a6"/><path d="M20 16c6 8 18 24 24 32M44 16c-6 8-18 24-24 32M22 22h20M24 32h16M20 42h24" stroke="%231d2a4a" stroke-width="4" stroke-linecap="round"/></svg>',
+  stethoscope: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%238cc8ff"/><path d="M20 16v14c0 7 5 12 12 12s12-5 12-12V16M32 42v10" stroke="%231d2a4a" stroke-width="4" fill="none"/><circle cx="32" cy="52" r="5" fill="%23ffc83d"/></svg>',
+  microscope: 'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><circle cx="32" cy="32" r="30" fill="%23ffc83d"/><path d="M24 48h16M32 48V36M32 24l8-8M24 24l12 12" stroke="%231d2a4a" stroke-width="4" stroke-linecap="round"/></svg>'
+};
+
+var audioCtx = null;
+function playSFX(type) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    var osc = audioCtx.createOscillator();
+    var gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    var now = audioCtx.currentTime;
+
+    if (type === 'ok') {
+      osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, now); osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
+      gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+      osc.start(now); osc.stop(now + 0.15);
+    } else if (type === 'bad') {
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now); osc.frequency.linearRampToValueAtTime(80, now + 0.25);
+      gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+      osc.start(now); osc.stop(now + 0.25);
+      if(navigator.vibrate) navigator.vibrate(80);
+    } else if (type === 'coin') {
+      osc.type = 'triangle'; osc.frequency.setValueAtTime(987.77, now); osc.frequency.setValueAtTime(1318.51, now + 0.08);
+      gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
+      osc.start(now); osc.stop(now + 0.25);
+    } else if (type === 'tick') {
+      osc.type = 'square'; osc.frequency.setValueAtTime(800, now);
+      gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
+      osc.start(now); osc.stop(now + 0.04);
+    } else if (type === 'strike') {
+      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(300, now); osc.frequency.exponentialRampToValueAtTime(50, now + 0.3);
+      gain.gain.setValueAtTime(0.4, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+      osc.start(now); osc.stop(now + 0.3);
+    }
+  } catch(e) {}
+}
+
+var firebaseConfig = {
+  apiKey: "AIzaSyDummyKeyForPublicReadWrite",
+  databaseURL: "https://med-game-leaderboard-default-rtdb.firebaseio.com"
+};
+if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
+var db = firebase.database();
+
+var g=document.getElementById("g"), hud=document.getElementById("hud"), OP=document.getElementById("op");
+var MODE="solo", ROOM_CODE="", PH="";
+var hearts,score,streak,si,qi,locked,pb=0,coins=0,tmr=null,tl=0,tt=1;
+var playerName = "Doctor" + Math.floor(1000 + Math.random() * 9000);
+var playerId = "usr_" + Math.random().toString(36).substr(2, 9);
+var leaderboardData = [];
+var missedQuestions = [];
+var duelRef = null, allPlayersInRoom = {}, myReadyState = false;
+
+var items={heart:0,freeze:0,double:0};
+var doubleCoinActive=false;
+var bossHP=100;
+var currentTheme="light";
+var currentAvatar="brain";
+var unlockedThemes=["light"];
+var unlockedAvatars=["brain"];
+var loginStreak=1;
+var lastLoginDate="";
+
+try{
+  pb=+localStorage.getItem("ctg_pb")||0;
+  coins=+localStorage.getItem("ctg_coins")||0;
+  items=JSON.parse(localStorage.getItem("ctg_items"))||{heart:0,freeze:0,double:0};
+  var savedName = localStorage.getItem("ctg_name");
+  if(savedName) playerName = savedName;
+  var savedId = localStorage.getItem("ctg_id");
+  if(savedId) playerId = savedId; else localStorage.setItem("ctg_id", playerId);
+  
+  currentTheme = localStorage.getItem("ctg_theme") || "light";
+  currentAvatar = localStorage.getItem("ctg_avatar") || "brain";
+  unlockedThemes = JSON.parse(localStorage.getItem("ctg_unlocked_themes")) || ["light"];
+  unlockedAvatars = JSON.parse(localStorage.getItem("ctg_unlocked_avatars")) || ["brain"];
+  loginStreak = +localStorage.getItem("ctg_login_streak") || 1;
+  lastLoginDate = localStorage.getItem("ctg_login_date") || "";
+  
+  var cachedLB = localStorage.getItem("ctg_cached_lb");
+  if(cachedLB) leaderboardData = JSON.parse(cachedLB);
+}catch(e){}
+
+function applyTheme(theme) {
+  currentTheme = theme;
+  document.documentElement.setAttribute("data-theme", theme);
+  saveState();
+}
+applyTheme(currentTheme);
+
+function checkDailyStreak() {
+  var today = new Date().toDateString();
+  if (lastLoginDate !== today) {
+    var yesterday = new Date(Date.now() - 86400000).toDateString();
+    if (lastLoginDate === yesterday) { loginStreak++; }
+    else if (lastLoginDate !== "") { loginStreak = 1; }
+    lastLoginDate = today;
+    saveState();
+    return true;
+  }
+  return false;
+}
+
+function saveState(){
+  try{
+    localStorage.setItem("ctg_pb",pb);
+    localStorage.setItem("ctg_coins",coins);
+    localStorage.setItem("ctg_items",JSON.stringify(items));
+    localStorage.setItem("ctg_name",playerName);
+    localStorage.setItem("ctg_theme",currentTheme);
+    localStorage.setItem("ctg_avatar",currentAvatar);
+    localStorage.setItem("ctg_unlocked_themes",JSON.stringify(unlockedThemes));
+    localStorage.setItem("ctg_unlocked_avatars",JSON.stringify(unlockedAvatars));
+    localStorage.setItem("ctg_login_streak",loginStreak);
+    localStorage.setItem("ctg_login_date",lastLoginDate);
+  }catch(e){}
+}
+
+db.ref("leaderboard").orderByChild("best").limitToLast(50).on("value", function(snapshot) {
+  var list = [];
+  snapshot.forEach(function(child) { list.push(child.val()); });
+  list.sort(function(a,b){ return b.best - a.best; });
+  leaderboardData = list;
+  try{ localStorage.setItem("ctg_cached_lb", JSON.stringify(list)); }catch(e){}
+  drawLB();
+}, function() { drawLB(); });
+
+function submitScoreToGlobal(finalScore){
+  if(finalScore <= 0) return;
+  var entry = { id: playerId, name: playerName, avatar: currentAvatar, best: finalScore, t: Date.now() };
+  db.ref("leaderboard/" + playerId).set(entry, function(err) {
+    if(err) {
+      var idx = leaderboardData.findIndex(p => p.id === playerId);
+      if(idx >= 0) { if(finalScore > leaderboardData[idx].best) leaderboardData[idx] = entry; }
+      else { leaderboardData.push(entry); }
+      leaderboardData.sort((a,b) => b.best - a.best);
+      drawLB();
+    }
+  });
+}
+
+// LECTURE CONTENT - PROF. AUTIFI NEUROANATOMY
+var S=[
+{n:"Stage 1: White Matter Fiber Classifier",d:"Analyze cerebral fiber bundles (Association, Commissural, Projection).",t:"mc",sec:10,q:[
+["Which bundle connects the orbital gyri (in front) with the temporal pole (behind) across the stem of the lateral sulcus?",["Uncinate fasciculus","Cingulum","Superior longitudinal fasciculus"],0,"Uncinate fasciculus connects orbital gyri to temporal pole."],
+["Which statement regarding the Arcuate Fasciculus is TRUE?",["It connects the two cerebral hemispheres directly","It connects Broca's and Wernicke's language areas in the dominant hemisphere","It connects the optic chiasm to the visual cortex"],1,"Arcuate fasciculus is a short association subset connecting major language areas."],
+["Which fiber bundle runs in the cingulate gyrus and connects it to the hippocampus?",["Cingulum","Fronto-occipital fasciculus","Inferior longitudinal fasciculus"],0,"Cingulum runs inside the cingulate gyrus to the hippocampus."],
+["Which of the following describes Projection Fibers?",["Interconnect identical cortical areas between left and right hemispheres","Interconnect different cortical regions in the SAME hemisphere","Connect the cerebral cortex with lower centers (thalamus, striatum, brainstem, spinal cord)"],2,"Projection fibers connect cortex to lower CNS centers."],
+["Select ALL structures that represent Corticofugal (cortical efferent) projection fibers:",["Sensory radiation & Optic radiation","Pyramidal tract & Cortico-pontine fibers","Superior thalamic radiation"],1,"Corticofugal fibers carry efferents away from cortex (e.g., Pyramidal & Corticopontine)."]]
+},
+{n:"Stage 2: Topographical Anatomy & Commissures",d:"Master the anatomy of Corpus Callosum and Diencephalic Commissures.",t:"mc",sec:9,q:[
+["Which commissure connects the olfactory bulbs, piriform lobes, and amygdaloid bodies across the lamina terminalis?",["Anterior commissure","Posterior commissure","Habenular commissure"],0,"Anterior commissure connects olfactory structures and amygdaloid bodies."],
+["The Forceps Major is formed by fibers sweeping backwards from which part of the Corpus Callosum?",["Rostrum","Genu","Splenium"],2,"Splenium fibers sweep backwards to form Forceps Major into occipital poles."],
+["Which structure forms the roof and lateral wall of the posterior horn of the lateral ventricle?",["Forceps Minor","Tapetum","Corona Radiata"],1,"Tapetum (from splenium) forms roof/lateral wall of posterior and inferior horns."],
+["Where does the Posterior Commissure cross the median plane?",["Upper part of lamina terminalis","Stalk of the pineal gland, above the cerebral aqueduct","Between the two crura of the fornix"],1,"Posterior commissure crosses in pineal stalk above aqueduct, connecting pretectal nuclei."],
+["The Rostrum of the corpus callosum extends downwards and backwards from the genu to the:",["Upper end of lamina terminalis","Pineal body","Anterior perforated substance"],0,"Rostrum extends to the upper end of lamina terminalis."]]
+},
+{n:"Stage 3: Internal Capsule & Angiology",d:"Precision mapping of internal capsule limbs and arterial blood supply.",t:"mc",sec:8,q:[
+["Which fiber tracts traverse the GENU of the Internal Capsule?",["Corticospinal fibers for lower limb","Corticonuclear / Corticobulbar fibers (head and neck)","Auditory radiation & Temporopontine fibers"],1,"Genu contains Corticonuclear (corticobulbar) motor fibers."],
+["Which structure separates the Lentiform Nucleus from the Thalamus and Caudate Nucleus?",["External capsule","Claustrum","Internal capsule (Posterior & Anterior limbs)"],2,"Internal capsule separates lentiform nucleus medially from caudate and thalamus."],
+["A stroke in Charcot's Artery (Artery of Cerebral Haemorrhage) affects a branch of which artery?",["Anterior Cerebral Artery (ACA)","Middle Cerebral Artery (MCA)","Posterior Cerebral Artery (PCA)"],1,"Charcot's artery is a lateral striate branch of the Middle Cerebral Artery."],
+["The Sublentiform part of the internal capsule contains which pathway?",["Auditory radiation & Temporo-pontine fibers","Optic radiation & Parieto-pontine fibers","Anterior thalamic radiation"],0,"Sublentiform part carries Auditory radiation and temporo-pontine fibers."],
+["Recurrent Artery of Heubner supplies which region of the internal capsule?",["Posterior limb","Genu","Retrolentiform part"],1,"Recurrent artery of Heubner supplies the Genu (along with direct ICA branches)."]]
+},
+{n:"Stage 4: Basal Ganglia Circuitry & Morphology",d:"Deep nuclei taxonomy, striatum connections, and extrapyramidal pathways.",t:"mc",sec:8,q:[
+["Which two nuclei collectively form the Neostriatum (receptive center of corpus striatum)?",["Caudate nucleus & Putamen","Putamen & Globus pallidus","Globus pallidus & Subthalamic nucleus"],0,"Neostriatum = Caudate nucleus + Putamen."],
+["Which statement correctly distinguishes the Putamen from the Globus Pallidus?",["Putamen is medial and pale; Globus pallidus is lateral and dark","Putamen is lateral and dark; Globus pallidus is medial and pale (Paleostriatum)","Both form the archistriatum"],1,"Putamen is dark & lateral; Globus pallidus is pale & medial (Paleostriatum)."],
+["The output (efferent) center sending fibers to thalamus, red nucleus, and substantia nigra is:",["Neostriatum","Globus Pallidus","Claustrum"],1,"Globus pallidus is the primary outflow/efferent center of the corpus striatum."],
+["The tail of the Caudate Nucleus terminates anteriorly by fusing with which structure?",["Subthalamic nucleus","Amygdaloid body (Amygdala)","Thalamic pulvinar"],1,"Tail of caudate runs in roof of inferior horn and fuses with Amygdaloid body."],
+["Which thin gray matter sheet is situated between the External Capsule and Insula?",["Claustrum","Internal Capsule","Lamina terminalis"],0,"Claustrum is separated from lentiform nucleus by external capsule and is related laterally to insula."]]
+},
+{n:"Boss: Dr. Inhibitor (Neuro-Lesions)",d:"Solve critical clinical cases involving capsular hemiplegia and movement disorders!",t:"mc",sec:6,q:[
+["A patient suffers a massive hemorrhage in the posterior limb of the internal capsule. What is the expected clinical outcome?",["Contralateral hemiplegia and contralateral loss of all somatosensory sensations","Ipsilateral optic atrophy only","Muscle flaccidity with no sensory loss"],0,"Posterior limb lesion causes contralateral hemiplegia (pyramidal) and contralateral sensory loss (superior thalamic radiation)."],
+["Degeneration of basal ganglia circuits causing involuntary, jerky, irregular, nonrepetitive movements is called:",["Athetosis","Chorea","Hemiballismus"],1,"Chorea presents with rapid, jerky, irregular nonrepetitive movements."],
+["Which basal ganglia disorder presents with Resting Tremor, Rigidity, Bradykinesia, and Postural Instability?",["Parkinson's disease","Huntington's chorea","Hemiballismus"],0,"Parkinson's triad: tremor, rigidity, bradykinesia."],
+["Wild, violent flinging involuntary movements confined to ONE side of the body is termed:",["Athetosis","Hemiballismus","Chorea"],1,"Hemiballismus is unilateral violent flinging movement."],
+["Basal nuclei damage causes loss of automatic associated movements, which is exemplified by:",["Loss of knee jerk reflex","Absence of arm-swinging during walking or facial expression while talking","Hyperactive tendon reflexes"],1,"Basal ganglia control automatic associated movements like arm-swinging while walking."]]
+}
+];
+
+function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function shuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function stopT(){clearInterval(tmr);tmr=null}
+function startT(sec,end){
+  stopT();tt=sec;tl=sec;
+  tmr=setInterval(function(){
+    tl-=.1;
+    var b=document.getElementById("tb"),c=document.getElementById("tc");
+    if(b){b.style.width=Math.max(0,tl/tt*100)+"%";b.style.background=tl/tt<.3?"var(--cor)":"var(--mint)"}
+    if(c)c.textContent="⏱ "+Math.max(0,Math.ceil(tl))+"s";
+    if(tl<=3 && tl>0 && Math.abs(Math.round(tl)-tl)<0.05) playSFX('tick');
+    if(tl<=0){stopT();end()}
+  },100)
+}
+function tbar(){return '<div class="tbar"><i id="tb"></i></div><div class="tc" id="tc"></div>'}
+
+function addCoins(amount){
+  var mult = doubleCoinActive ? 2 : 1;
+  coins += (amount * mult);
+  playSFX('coin');
+  saveState();
+}
+
+function triggerShake() {
+  g.classList.add("shake");
+  setTimeout(function(){ g.classList.remove("shake"); }, 300);
+}
+
+function hudUp(){
+  hud.hidden=false;
+  document.getElementById("hh").textContent="❤️".repeat(Math.max(hearts,0))+"🖤".repeat(3-Math.max(hearts,0));
+  document.getElementById("ss").textContent="⭐ "+score;
+  document.getElementById("st").textContent="🔥 "+streak;
+  document.getElementById("cc").innerHTML='<img class="avatar-img" src="'+AVATARS[currentAvatar]+'"> 🪙 '+coins;
+  if(MODE==="duel" && duelRef){
+    duelRef.child(playerId).update({ score: score, hearts: Math.max(hearts,0), stage: si, name: playerName, avatar: currentAvatar });
+  }
+}
+
+function powerBar(){
+  if(MODE==="duel") return '';
+  return '<div class="pwr-bar">'+
+    '<button class="pwr-btn" onclick="usePwr(\'heart\')" '+(items.heart<=0||hearts>=3?'disabled':'')+'>❤️ +1 ('+items.heart+')</button>'+
+    '<button class="pwr-btn" onclick="usePwr(\'freeze\')" '+(items.freeze<=0?'disabled':'')+'>⏱️ +5s ('+items.freeze+')</button>'+
+    '<button class="pwr-btn" onclick="usePwr(\'double\')" '+(items.double<=0||doubleCoinActive?'disabled':'')+'>🪙 2x ('+(doubleCoinActive?'ON':items.double)+')</button>'+
+  '</div>';
+}
+
+function usePwr(type){
+  if(type==='heart' && items.heart>0 && hearts<3){ items.heart--; hearts++; }
+  else if(type==='freeze' && items.freeze>0){ items.freeze--; tl+=5; tt+=5; }
+  else if(type==='double' && items.double>0 && !doubleCoinActive){ items.double--; doubleCoinActive=true; }
+  saveState();hudUp();
+  var el = document.getElementById("pwr-container");
+  if(el) el.innerHTML = powerBar();
+}
+
+function drawLB(){
+  var el=document.getElementById("lb");if(!el)return;
+  var h='<p><b>Name:</b> <img class="avatar-img" src="'+AVATARS[currentAvatar]+'"> '+esc(playerName)+' <button class="btn" style="padding:2px 8px;font-size:.8rem" onclick="changeName()">Edit</button></p>';
+  h+='<p><b>Your Best: '+pb+' pts | 🪙 Balance: '+coins+' | 🔥 Streak: '+loginStreak+'d</b></p>';
+  h+='<h2>🏆 Global Leaderboard ('+leaderboardData.length+')</h2>';
+  if(!leaderboardData.length) h+='<p>No high scores recorded yet!</p>';
+  else{
+    h+='<ol>';
+    leaderboardData.forEach(function(r,i){
+      var medal = ["🥇","🥈","🥉"][i] || (i+1)+".";
+      var isMe = r.id === playerId;
+      var av = r.avatar && AVATARS[r.avatar] ? AVATARS[r.avatar] : AVATARS.brain;
+      h+='<li class="'+(isMe?"me":"")+'"><span>'+medal+' <img class="avatar-img" src="'+av+'"> '+esc(r.name)+(isMe?' (You)':'')+'</span><span>'+r.best+' pts</span></li>';
+    });
+    h+='</ol>';
+  }
+  el.innerHTML=h;
+}
+
+function changeName(){
+  var newName = prompt("Enter your doctor/student name:", playerName);
+  if(newName && newName.trim()){
+    playerName = newName.trim().substring(0, 18);
+    saveState();
+    if(pb > 0) submitScoreToGlobal(pb);
+    drawLB();
+  }
+}
+
+function title(){
+ stopT();hud.hidden=true;OP.hidden=true;MODE="solo";doubleCoinActive=false;
+ if(duelRef) { duelRef.off(); duelRef=null; }
+ g.className="card hero";
+ 
+ var showRewardModal = checkDailyStreak();
+ var streakBonusHtml = showRewardModal ? '<div style="background:var(--card);padding:10px;border-radius:12px;margin-bottom:10px;border:2px solid var(--line)">🎁 <b>Daily Study Reward!</b> Day '+loginStreak+' streak! Claimed +'+(loginStreak*20)+' 🪙</div>' : '';
+ if(showRewardModal) addCoins(loginStreak * 20);
+
+ g.innerHTML=streakBonusHtml+'<h1>Neuroanatomy Challenge 🧠</h1><p>Master White Matter, Internal Capsule & Basal Nuclei (Prof. Autifi Lecture)!</p>'+
+ '<div class="row">'+
+ '<button class="btn" id="go">Play Challenge</button>'+
+ '<button class="btn" id="shp" style="background:var(--mint)">🛍️ Shop</button>'+
+ '<button class="btn" id="dl">⚔️ 1v1 Duel</button>'+
+ '</div><div class="lb" id="lb"></div>';
+ document.getElementById("go").onclick=function(){hearts=3;score=0;streak=0;si=0;missedQuestions=[];intro()};
+ document.getElementById("shp").onclick=openShop;
+ document.getElementById("dl").onclick=duelMenu;
+ drawLB();
+}
+
+function openShop(){
+  stopT();hud.hidden=true;OP.hidden=true;
+  g.className="card";
+  g.innerHTML='<h2>🛍️ Game Shop</h2><p>Balance: <b>🪙 '+coins+' coins</b></p>'+
+  '<h3>Power-ups</h3>'+
+  '<div class="shop-item"><div><b>❤️ Extra Heart</b><br><small>Restores 1 heart mid-game</small></div><button class="btn" onclick="buyItem(\'heart\', 50)">50 🪙</button></div>'+
+  '<div class="shop-item"><div><b>⏱️ Freeze Time</b><br><small>Adds +5 seconds to timer</small></div><button class="btn" onclick="buyItem(\'freeze\', 30)">30 🪙</button></div>'+
+  '<div class="shop-item"><div><b>🪙 Double Coins</b><br><small>2x coin earnings for 1 stage</small></div><button class="btn" onclick="buyItem(\'double\', 40)">40 🪙</button></div>'+
+  '<h3>Avatars 🖼️</h3>'+
+  '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.brain+'"> <b>Brain</b></div>'+(unlockedAvatars.includes('brain') ? '<button class="btn" onclick="setAvatar(\'brain\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'brain\', 50)">50 🪙</button>')+'</div>'+
+  '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.dna+'"> <b>DNA Helix</b></div>'+(unlockedAvatars.includes('dna') ? '<button class="btn" onclick="setAvatar(\'dna\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'dna\', 100)">100 🪙</button>')+'</div>'+
+  '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.stethoscope+'"> <b>Stethoscope</b></div>'+(unlockedAvatars.includes('stethoscope') ? '<button class="btn" onclick="setAvatar(\'stethoscope\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'stethoscope\', 150)">150 🪙</button>')+'</div>'+
+  '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.microscope+'"> <b>Microscope</b></div>'+(unlockedAvatars.includes('microscope') ? '<button class="btn" onclick="setAvatar(\'microscope\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'microscope\', 200)">200 🪙</button>')+'</div>'+
+  '<h3>Themes 🎨</h3>'+
+  '<div class="shop-item"><div><b>Dark Cyberpunk</b></div>'+(unlockedThemes.includes('cyberpunk') ? '<button class="btn" onclick="applyTheme(\'cyberpunk\')">Equip</button>' : '<button class="btn" onclick="buyTheme(\'cyberpunk\', 150)">150 🪙</button>')+'</div>'+
+  '<div class="shop-item"><div><b>Biohazard Green</b></div>'+(unlockedThemes.includes('biohazard') ? '<button class="btn" onclick="applyTheme(\'biohazard\')">Equip</button>' : '<button class="btn" onclick="buyTheme(\'biohazard\', 150)">150 🪙</button>')+'</div>'+
+  '<div class="fb" id="sfb"></div>'+
+  '<button class="opt" id="bk">Back to Menu</button>';
+  document.getElementById("bk").onclick=title;
+}
+
+function buyItem(type, cost){
+  var sfb=document.getElementById("sfb");
+  if(coins >= cost){ coins -= cost; items[type]=(items[type]||0)+1; saveState(); sfb.textContent="✅ Purchased successfully!"; openShop(); }
+  else { sfb.textContent="❌ Not enough coins!"; }
+}
+
+function buyTheme(t, cost){
+  if(coins >= cost){ coins -= cost; unlockedThemes.push(t); applyTheme(t); openShop(); }
+}
+
+function buyAvatar(a, cost){
+  if(coins >= cost){ coins -= cost; unlockedAvatars.push(a); setAvatar(a); openShop(); }
+}
+
+function setAvatar(a){
+  currentAvatar = a; saveState();
+  if(pb > 0) submitScoreToGlobal(pb); openShop();
+}
+
+function duelMenu(){
+  stopT();hud.hidden=true;OP.hidden=true;g.className="card";
+  g.innerHTML='<h2>1v1 Neuro Duel ⚔️</h2><p>Compete live against another student on identical anatomy questions!</p>'+
+  '<button class="btn" id="mk">Create Room Code</button>'+
+  '<p>Or enter 4-letter room code:</p>'+
+  '<div><input type="text" id="cd" maxlength="4" placeholder="CODE"><button class="btn" id="jn">Join Duel</button></div>'+
+  '<div class="fb" id="er"></div><button class="opt" id="bk">Back</button>';
+  document.getElementById("bk").onclick=title;
+  document.getElementById("mk").onclick=function(){
+    var c=""; var a="ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    for(var i=0;i<4;i++) c+=a[Math.floor(Math.random()*a.length)];
+    joinDuelRoom(c);
+  };
+  document.getElementById("jn").onclick=function(){
+    var c=document.getElementById("cd").value.trim().toUpperCase();
+    if(c.length!==4){ document.getElementById("er").textContent="Enter a 4-character code."; return; }
+    joinDuelRoom(c);
+  };
+}
+
+function joinDuelRoom(code){
+  ROOM_CODE = code; MODE = "duel"; PH = "lobby"; myReadyState = false; allPlayersInRoom = {};
+  duelRef = db.ref("rooms/" + code);
+  
+  duelRef.child(playerId).set({ name: playerName, avatar: currentAvatar, ready: false, score: 0, hearts: 3, stage: 0, done: false });
+  duelRef.child(playerId).onDisconnect().remove();
+
+  duelRef.on("value", function(snap){
+    allPlayersInRoom = snap.val() || {};
+    var keys = Object.keys(allPlayersInRoom);
+    var oppKey = keys.find(k => k !== playerId);
+    var opponentData = oppKey ? allPlayersInRoom[oppKey] : null;
+
+    if(PH === "lobby") drawDuelLobby(opponentData);
+    else if(PH === "play") updateOpponentHUD(opponentData);
+    else if(PH === "end") drawDuelEnd(opponentData);
+
+    if(PH === "lobby" && keys.length === 2 && myReadyState && opponentData && opponentData.ready){
+      PH = "play"; hearts = 3; score = 0; streak = 0; si = 0; missedQuestions = []; OP.hidden = false;
+      updateOpponentHUD(opponentData); intro();
+    }
+  });
+}
+
+function drawDuelLobby(opponentData){
+  g.className = "card";
+  g.innerHTML = '<h2>Duel Lobby</h2><p>Share code with classmate:</p><div class="code">'+esc(ROOM_CODE)+'</div>'+
+  '<p>'+(opponentData ? '⚔️ <img class="avatar-img" src="'+AVATARS[opponentData.avatar||'brain']+'"> <b>'+esc(opponentData.name)+'</b> is in room ' + (opponentData.ready ? 'and ready!' : '(waiting...)') : 'Waiting for opponent...')+'</p>'+
+  '<button class="btn" id="rd" '+(opponentData ? '' : 'disabled')+'>' + (myReadyState ? 'Ready! Waiting...' : 'I\'m Ready') + '</button> '+
+  '<button class="opt" id="bk">Leave Room</button>';
+  
+  document.getElementById("bk").onclick = title;
+  document.getElementById("rd").onclick = function(){
+    myReadyState = true; duelRef.child(playerId).update({ ready: true }); drawDuelLobby(opponentData);
+  };
+}
+
+function updateOpponentHUD(opponentData){
+  if(!opponentData) { OP.textContent = "⚔️ Opponent disconnected"; return; }
+  OP.innerHTML = '⚔️ <img class="avatar-img" src="'+AVATARS[opponentData.avatar||'brain']+'"> ' + esc(opponentData.name) + ": ⭐ " + (opponentData.score||0) + "  ❤️ " + (opponentData.hearts??3) + "  Stage " + ((opponentData.stage||0)+1) + (opponentData.done ? " ✔" : "");
+}
+
+function intro(){
+ hudUp();var s=S[si];g.className="card";
+ doubleCoinActive=false;
+ if(si === 4) bossHP = 100;
+ g.innerHTML='<h2>'+s.n+'</h2><p>'+s.d+'</p><p><b>⏱️ '+s.sec+' seconds per question.</b></p><button class="btn" id="go">Start Stage</button>';
+ document.getElementById("go").onclick=function(){qi=0;s.o=shuf(s.q.slice());showQ()};
+}
+
+function ok(){
+  playSFX('ok'); streak++;
+  var p=10+Math.min(streak,5)*2+Math.round(Math.max(tl,0)/tt*8);
+  score+=p; addCoins(5); return p;
+}
+
+function bad(){
+  playSFX('bad'); triggerShake();
+  streak=0;hearts--;hudUp();
+  if(hearts<=0){setTimeout(over,1200);return true}
+  return false;
+}
+function bar(n,t){return '<div class="bar"><i style="width:'+(n/t*100)+'%"></i></div>'}
+
+function showQ(){
+ var s=S[si],q=s.o[qi];locked=false;hudUp();
+ var bossHtml = si === 4 ? '<div class="boss-box"><b>👾 Dr. Inhibitor (Clinical Cases)</b><div class="boss-hp"><i style="width:'+bossHP+'%"></i></div></div>' : '';
+ var h=bossHtml+bar(qi,s.o.length)+'<div id="pwr-container">'+powerBar()+'</div>'+tbar()+'<div class="q">'+q[0]+'</div>';
+ 
+ var arr = [0,1,2]; shuf(arr);
+ arr.forEach(function(k){h+='<button class="opt" data-k="'+k+'">'+q[1][k]+'</button>'});
+ g.innerHTML=h+'<div class="fb" aria-live="polite"></div>';
+ g.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){pick(+b.dataset.k,b)}});
+ startT(s.sec,function(){pick(-1)});
+}
+
+function pick(k,b){
+ if(locked)return;locked=true;stopT();var s=S[si],q=s.o[qi],fb=g.querySelector(".fb"),dead=false;
+ g.querySelectorAll(".opt").forEach(function(x){if(+x.dataset.k===q[2])x.classList.add("ok")});
+ if(k===q[2]){
+   var p=ok();
+   if(si === 4) { bossHP = Math.max(0, bossHP - 25); playSFX('strike'); }
+   fb.textContent="✅ +"+p+" pts (+"+(doubleCoinActive?10:5)+" 🪙). "+q[3];
+ }
+ else{
+   if(b)b.classList.add("no");
+   fb.textContent=(k<0?"⏰ Time's up! ":"❌ ")+q[3];
+   // Log missed question for review screen
+   missedQuestions.push({ question: q[0], correctAnswer: q[1][q[2]], explanation: q[3] });
+   dead=bad();
+ }
+ hudUp();if(dead)return;
+ setTimeout(function(){qi++;if(qi>=s.o.length)stageDone();else showQ()},1800);
+}
+
+function stageDone(){
+ stopT();si++;addCoins(25);saveState();
+ if(si>=S.length)return win();
+ g.innerHTML='<h2>Stage Clear! 🧠</h2><p>Score: '+score+'. Hearts remaining: '+hearts+'.</p><p>Stage Bonus: <b>+'+(doubleCoinActive?50:25)+' Coins 🪙</b></p><button class="btn" id="go">Next Stage</button>';
+ document.getElementById("go").onclick=intro;
+}
+
+function win(){
+ var bonus=hearts*20;score+=bonus;addCoins(50);
+ var isNewBest = score > pb;
+ if(isNewBest){ pb = score; saveState(); }
+ submitScoreToGlobal(score);
+ hudUp();
+ if(MODE==="duel"){
+   PH="end";
+   duelRef.child(playerId).update({ done: true, score: score });
+   var oppKey = Object.keys(allPlayersInRoom).find(k => k !== playerId);
+   drawDuelEnd(oppKey ? allPlayersInRoom[oppKey] : null);
+   return;
+ }
+ g.innerHTML='<p class="big">'+score+'</p><h2>Master of Neuroanatomy 🏆</h2><p>Dr. Inhibitor defeated! Bonus +'+bonus+' pts & +50 🪙.'+(isNewBest?' <b>New High Score! 🎉</b>':'')+'</p><div class="row"><button class="btn" id="go">Play Again</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div><div class="lb" id="lb"></div>';
+ document.getElementById("go").onclick=title;
+ document.getElementById("rev").onclick=drawMistakesReview;
+ drawLB();
+}
+
+function over(){
+ stopT();
+ var isNewBest = score > pb;
+ if(isNewBest){ pb = score; saveState(); }
+ submitScoreToGlobal(score);
+ if(MODE==="duel"){
+   PH="end";
+   duelRef.child(playerId).update({ done: true, score: score });
+   var oppKey = Object.keys(allPlayersInRoom).find(k => k !== playerId);
+   drawDuelEnd(oppKey ? allPlayersInRoom[oppKey] : null);
+   return;
+ }
+ g.innerHTML='<h2>Exam Failed 💔</h2><p>Review Prof. Autifi\'s lecture slides and try again! Score: '+score+(isNewBest?'. <b>New High Score!</b>':'.')+'</p><div class="row"><button class="btn" id="go">Try Again</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div><div class="lb" id="lb"></div>';
+ document.getElementById("go").onclick=title;
+ document.getElementById("rev").onclick=drawMistakesReview;
+ drawLB();
+}
+
+function drawMistakesReview(){
+  stopT();
+  g.className="card";
+  if(missedQuestions.length === 0){
+    g.innerHTML='<h2>Flawless Performance! 🎉</h2><p>You answered every single question correctly this run!</p><button class="btn" onclick="title()">Main Menu</button>';
+    return;
+  }
+  var h='<h2>📝 Mistakes Review ('+missedQuestions.length+')</h2><div style="max-height:320px; overflow-y:auto; margin:12px 0;">';
+  missedQuestions.forEach(function(item, idx){
+    h+='<div class="review-item">'+
+      '<b>Q'+(idx+1)+': '+esc(item.question)+'</b><br>'+
+      '<span style="color:var(--mint)">✅ <b>Correct Answer:</b> '+esc(item.correctAnswer)+'</span><br>'+
+      '<small>💡 <i>'+esc(item.explanation)+'</i></small>'+
+    '</div>';
+  });
+  h+='</div><button class="btn" onclick="title()">Main Menu</button>';
+  g.innerHTML=h;
+}
+
+function drawDuelEnd(opponentData){
+  var h='<p class="big">'+score+'</p>';
+  if(!opponentData) h+='<h2>Opponent Left 🏳️</h2><p>You win by forfeit!</p>';
+  else if(!opponentData.done) h+='<h2>Finished!</h2><p>Waiting for '+esc(opponentData.name)+' to complete their run... (Current: '+(opponentData.score||0)+' pts)</p>';
+  else {
+    var oppScore = opponentData.score || 0;
+    if(score > oppScore) h+='<h2>You Win! 🏆</h2>';
+    else if(score < oppScore) h+='<h2>You Lost 💔</h2>';
+    else h+='<h2>Draw! 🤝</h2>';
+    h+='<p>Your Score: '+score+' vs '+esc(opponentData.name)+': '+oppScore+'</p>';
+  }
+  g.innerHTML=h+'<div class="row"><button class="btn" id="go">Main Menu</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div>';
+  document.getElementById("go").onclick=title;
+  document.getElementById("rev").onclick=drawMistakesReview;
+}
+
+title();
+</script>
+</body>
+</html>
