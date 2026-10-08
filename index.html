@@ -1,618 +1,293 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Neuroanatomy: Basal Nuclei & Internal Capsule</title>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-<style>
-/* --- CLEAN PALETTES --- */
-:root[data-theme="light"] {
-  --bg: #faf7f2;
-  --card: #ffffff;
-  --ink: #1e293b;
-  --line: #334155;
-  --yel: #fbbf24;
-  --cor: #ef4444;
-  --mint: #10b981;
-  --sky: #3b82f6;
-  --mut: #64748b;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>The Tomb of Galen: An Uncharted Medical Quest</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Georgia', 'Times New Roman', serif;
+        }
 
-:root[data-theme="dark"] {
-  --bg: #0f172a;
-  --card: #1e293b;
-  --ink: #f8fafc;
-  --line: #cbd5e1;
-  --yel: #f59e0b;
-  --cor: #f87171;
-  --mint: #34d399;
-  --sky: #60a5fa;
-  --mut: #94a3b8;
-}
+        body {
+            background-color: #0d0f12;
+            color: #e0d8c3;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
 
-:root[data-theme="nordic"] {
-  --bg: #f1f5f9;
-  --card: #ffffff;
-  --ink: #0f172a;
-  --line: #475569;
-  --yel: #38bdf8;
-  --cor: #f43f5e;
-  --mint: #2dd4bf;
-  --sky: #818cf8;
-  --mut: #64748b;
-}
+        .game-container {
+            max-width: 750px;
+            width: 100%;
+            background: #181c22;
+            border: 2px solid #8c6d3f;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
 
-html{scroll-padding-top:env(safe-area-inset-top,0px)}
-*{box-sizing:border-box}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;line-height:1.45;font-size:16px;transition:background .2s,color .2s}
-main{max-width:560px;margin:0 auto;padding:14px 14px 50px;position:relative;}
-.hud{display:flex;justify-content:space-between;align-items:center;font-weight:800;margin-bottom:10px;gap:6px;flex-wrap:wrap}
-.hud span{background:var(--card);border:2px solid var(--line);border-radius:999px;padding:4px 10px;white-space:nowrap;font-size:.9rem;display:inline-flex;align-items:center;gap:4px}
-.card{background:var(--card);border:3px solid var(--line);border-radius:22px;padding:18px;box-shadow:4px 4px 0 var(--line);transition:transform .1s;position:relative;overflow:hidden;}
-.card.shake{animation:shake 0.3s ease-in-out}
-@keyframes shake { 0%{transform:translate(0,0)} 25%{transform:translate(-6px,0)} 50%{transform:translate(6px,0)} 75%{transform:translate(-6px,0)} 100%{transform:translate(0,0)} }
-.hero{background:var(--card);color:var(--ink)}
-h1{font-size:2.1rem;line-height:1.05;margin:0 0 8px;letter-spacing:-.02em}
-h2{margin:0 0 6px;font-size:1.3rem}
-p{margin:6px 0}
-.bar{height:10px;background:rgba(128,128,128,.2);border-radius:999px;overflow:hidden;margin:0 0 12px}
-.bar i{display:block;height:100%;background:var(--cor);transition:width .3s}
-.btn{font:inherit;font-weight:800;color:var(--ink);background:var(--yel);border:2px solid var(--line);border-radius:14px;padding:11px 18px;cursor:pointer;box-shadow:2px 2px 0 var(--line)}
-.btn:active{transform:translate(1px,1px);box-shadow:0 0 0 var(--line)}
-.btn:disabled{opacity:.4;cursor:not-allowed}
-button:focus-visible{outline:3px solid var(--cor);outline-offset:2px}
-.opt{display:block;width:100%;text-align:left;font:inherit;font-weight:600;color:var(--ink);background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin:8px 0;cursor:pointer;line-height:1.35}
-.opt.ok{background:var(--mint);color:#022c22}
-.opt.no{background:var(--cor);color:#450a0a}
-.q{font-weight:800;font-size:1.1rem;margin:8px 0}
-.fb{min-height:3em;font-weight:600;margin:8px 0}
-.big{font-size:2.6rem;font-weight:800;margin:0}
-.tbar{height:12px;background:rgba(128,128,128,.2);border-radius:999px;overflow:hidden;border:2px solid var(--line)}
-.tbar i{display:block;height:100%;width:100%;background:var(--mint)}
-.tc{text-align:right;font-weight:800;font-size:.9rem;margin:2px 0 6px}
-.lb{margin-top:18px}
-.lb ol{list-style:none;margin:8px 0 0;padding:0}
-.lb li{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:8px 12px;margin:6px 0;font-weight:700}
-.lb li.me{background:var(--yel);color:#0f172a}
-.lb li span:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap;display:flex;align-items:center;gap:6px}
-input[type="text"]{font:inherit;font-weight:800;text-align:center;width:100%;padding:12px;border:2px solid var(--line);border-radius:12px;background:var(--bg);color:var(--ink);margin:8px 0}
-.row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
-.pwr-bar{display:flex;gap:6px;margin:10px 0}
-.pwr-btn{flex:1;padding:6px;font-size:.85rem;background:var(--bg);border:2px solid var(--line);border-radius:10px;font-weight:800;cursor:pointer;color:var(--ink)}
-.pwr-btn:disabled{opacity:.4;cursor:not-allowed}
-.shop-item{display:flex;justify-content:space-between;align-items:center;background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:10px;margin:8px 0}
-.shop-item div{text-align:left;display:flex;align-items:center;gap:8px}
-.opp{background:var(--sky);color:#0f172a;border:2px solid var(--line);border-radius:12px;padding:6px 12px;margin-bottom:10px;font-weight:700;font-size:.9rem}
-.code{font-size:2.4rem;font-weight:800;letter-spacing:.25em;text-align:center;margin:10px 0}
-.boss-box{border:3px solid var(--cor);background:var(--bg);border-radius:14px;padding:10px;margin-bottom:12px;text-align:center}
-.boss-hp{height:16px;background:rgba(128,128,128,.3);border-radius:999px;overflow:hidden;border:2px solid var(--line);margin-top:4px}
-.boss-hp i{display:block;height:100%;background:var(--cor);width:100%;transition:width .4s}
-.avatar-img{width:32px;height:32px;border-radius:50%;border:2px solid var(--line);background:#fff;display:inline-block;vertical-align:middle;object-fit:cover;flex-shrink:0;}
-.review-item{background:var(--bg);border:2px solid var(--line);border-radius:12px;padding:12px;margin-bottom:10px;text-align:left}
-.mode-toggle{display:flex;background:var(--bg);border:2px solid var(--line);border-radius:14px;padding:4px;margin:10px 0;gap:4px}
-.mode-btn{flex:1;border:none;background:transparent;font:inherit;font-weight:800;padding:8px;border-radius:10px;cursor:pointer;color:var(--ink)}
-.mode-btn.active{background:var(--yel);color:#0f172a;border:2px solid var(--line)}
-</style>
+        .header {
+            background: linear-gradient(180deg, #2a2015 0%, #181c22 100%);
+            padding: 20px;
+            text-align: center;
+            border-bottom: 2px solid #8c6d3f;
+        }
+
+        .header h1 {
+            color: #d4af37;
+            font-size: 1.8rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            text-shadow: 2px 2px 4px #000;
+        }
+
+        .stats-bar {
+            display: flex;
+            justify-content: space-around;
+            background: #111418;
+            padding: 10px;
+            border-bottom: 1px solid #332a1e;
+            font-size: 0.9rem;
+            color: #a89f91;
+        }
+
+        .stat-val {
+            color: #d4af37;
+            font-weight: bold;
+        }
+
+        .story-section {
+            padding: 25px;
+            line-height: 1.6;
+            font-size: 1.05rem;
+            min-height: 160px;
+            background: #14171c;
+        }
+
+        .story-text {
+            margin-bottom: 15px;
+        }
+
+        .options-container {
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: #181c22;
+        }
+
+        .btn-option {
+            background: #252a33;
+            color: #d8cfbe;
+            border: 1px solid #57462c;
+            padding: 14px 18px;
+            border-radius: 6px;
+            cursor: pointer;
+            text-align: left;
+            font-size: 0.95rem;
+            transition: all 0.2s ease;
+        }
+
+        .btn-option:hover {
+            background: #3b3123;
+            border-color: #d4af37;
+            color: #fff;
+            transform: translateX(4px);
+        }
+
+        .feedback-banner {
+            padding: 12px 20px;
+            font-weight: bold;
+            display: none;
+            text-align: center;
+        }
+
+        .feedback-correct {
+            background: #1c3b22;
+            color: #62d978;
+            border-top: 1px solid #2e663a;
+        }
+
+        .feedback-wrong {
+            background: #3b1c1c;
+            color: #d96262;
+            border-top: 1px solid #662e2e;
+        }
+
+        .restart-btn {
+            display: none;
+            margin: 20px auto;
+            padding: 12px 24px;
+            background: #d4af37;
+            color: #000;
+            border: none;
+            font-weight: bold;
+            border-radius: 6px;
+            cursor: pointer;
+            text-transform: uppercase;
+        }
+
+        .restart-btn:hover {
+            background: #f0c946;
+        }
+    </style>
 </head>
 <body>
-<main>
-<div class="hud" id="hud" hidden>
-  <span id="hh"></span>
-  <span id="ss"></span>
-  <span id="st"></span>
-  <span id="cc">🪙 0</span>
+
+<div class="game-container">
+    <div class="header">
+        <h1>Tomb of Galen</h1>
+    </div>
+
+    <div class="stats-bar">
+        <div>Explorer: <span class="stat-val" id="player-name">Dr. Drake</span></div>
+        <div>Health: <span class="stat-val" id="health-val">100 HP</span></div>
+        <div>Relics Found: <span class="stat-val" id="relics-val">0</span></div>
+    </div>
+
+    <div class="story-section">
+        <div class="story-text" id="story-text">
+            Loading expedition...
+        </div>
+    </div>
+
+    <div class="feedback-banner" id="feedback"></div>
+
+    <div class="options-container" id="options-container">
+        <!-- Dynamic options will appear here -->
+    </div>
+
+    <button class="restart-btn" id="restart-btn" onclick="restartGame()">Try Quest Again</button>
 </div>
-<div class="opp" id="op" hidden></div>
-<div class="card" id="g"></div>
-</main>
+
 <script>
-var AVATARS = {
-  brain: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZjZiNTciLz48cGF0aCBkPSJNMjIgMjBjLTMgMC01IDItNSA1IDAgMiAxIDQgMyA1LTIgMS0zIDMtMyA1IDAgMyAyIDYgNiA2 IDEgMCAyIDAgMy0x IDEgMyA8IDUgNyA1czYtMiA3LTVjMSAxIDIgMSAz IDEgNCAwIDYtMyA2LTYgMC0yLTEtNC0zLTUgMi0xIDMtMyAzLTUgMC0zLTItNS01LTUtMiAwLTQgMS01IDItMi0yLTUtMy04LTNzLTYgMS04IDNjLTEtMS0zLTItNS0yeiIgZmlsbD0iI2ZmZiIvPjwvc3ZnPg==',
-  dna: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM1ZmQzYTYiLz48cGF0aCBkPSJNMjAgMTZjNiA4IDE4IDI0IDI0IDMyTTQ4IDE2Yy02IDgtMTggMjQtMjQgMzJNMjIgMjJoMjBNMjQgMzJoMTZNMjAgNDJoMjQiIHN0cm9rZT0iIzFkMmE0YSIgc3Ryb2tlLXdpZHRoPSI0IiBzdHJva2UtbGluZWNhcD0icm91bmQiLz48L3N2Zz4=',
-  stethoscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiM4Y2M4ZmYiLz48cGF0aCBkPSJNMjAgMTZ2MTRjMCA3IDUgMTIgMTIgMTJzMTItNSAxMi0xMlYxNk0zMiA0MnYxMCIgc3Ryb2tlPSIjMWQyYTRhIiBzdHJva2Utd2lkdGg9IjQiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIzMiIgY3k9IjUyIiByPSI1IiBmaWxsPSIjZmZjODNkIi8+PC9zdmdn',
-  microscope: 'data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA2NCA2NCI+PGNpcmNsZSBjeD0iMzIiIGN5PSIzMiIgcj0iMzAiIGZpbGw9IiNmZmM4M2QiLz48cGF0aCBkPSJNMjQgNDhoMTZNMzIgNDhWMzZNMzIgMjRsOC04TTI0IDI0bDEyIDEyIiBzdHJva2U9IiMxZDJhNGEiIHN0cm9rZS13aWR0aD0iNCIgc3Ryb2tlLWxpbmVjYXA9InJvdW5kIi8+PC9zdmdn'
-};
+    // Game State Variables
+    let health = 100;
+    let relics = 0;
+    let currentStep = 0;
 
-var audioCtx = null;
-function playSFX(type) {
-  try {
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    var osc = audioCtx.createOscillator();
-    var gain = audioCtx.createGain();
-    osc.connect(gain); gain.connect(audioCtx.destination);
-    var now = audioCtx.currentTime;
+    // Quest Decision Tree & Quiz Data
+    const storyData = [
+        {
+            id: 0,
+            story: "You light your torch inside the damp, ancient anatomical chamber. Embedded in the stone door ahead is a carved riddle left behind by ancient physicians: 'To unlock the passage without triggering the collapsing ceiling, identify which cranial nerve provides parasympathetic innervation to the heart, lungs, and digestive tract.'",
+            options: [
+                { text: "A. Cranial Nerve V (Trigeminal)", correct: false, feedback: "Wrong door mechanism! Traps activate—spikes graze your arm. (-25 HP)" },
+                { text: "B. Cranial Nerve X (Vagus Nerve)", correct: true, feedback: "Correct! Heavy gears turn, and the ancient stone gate slides open smoothly." },
+                { text: "C. Cranial Nerve VII (Facial)", correct: false, feedback: "Incorrect. Dust rains down as a tripwire triggers. (-25 HP)" }
+            ]
+        },
+        {
+            id: 1,
+            story: "Passing into the Inner Sanctum, you find an ancient altar with two pedestals holding glowing flasks. An inscription warns: 'A traveler suffers severe hypotension, bradycardia, and warm dry skin following a traumatic high cervical spinal cord injury. Choose the antidote reflecting the underlying shock mechanism.'",
+            options: [
+                { text: "A. Administer Atropine & Vasopressors (Neurogenic Shock)", correct: true, feedback: "Spot on! The pedestal unlocks and you retrieve an ancient Golden Caduceus relic! (+1 Relic)" },
+                { text: "B. Administer Massive Fluid Bolus only (Hypovolemic Shock)", correct: false, feedback: "Incorrect diagnosis! The altar vents poisonous mist. (-25 HP)" },
+                { text: "C. Administer Epinephrine for Anaphylaxis", correct: false, feedback: "Wrong mechanism! A dart hits your shoulder. (-25 HP)" }
+            ]
+        },
+        {
+            id: 2,
+            story: "You reach the treasure vault's final door guarded by two bronze statues. The door asks for the core hallmark of Parkinson's Disease in neuro-pathology: 'Which anatomical structure undergoes progressive loss of dopaminergic neurons?'",
+            options: [
+                { text: "A. Hippocampus", correct: false, feedback: "Incorrect. The floor beneath you tilts dangerously! (-25 HP)" },
+                { text: "B. Substantia Nigra pars compacta", correct: true, feedback: "A golden glow illuminates the chamber as the final treasure vault opens!" },
+                { text: "C. Cerebellar Cortex", correct: false, feedback: "Wrong! A pendulum blade swings from the ceiling. (-25 HP)" }
+            ]
+        }
+    ];
 
-    if (type === 'ok') {
-      osc.type = 'sine'; osc.frequency.setValueAtTime(587.33, now); osc.frequency.exponentialRampToValueAtTime(880, now + 0.15);
-      gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
-      osc.start(now); osc.stop(now + 0.15);
-    } else if (type === 'bad') {
-      osc.type = 'sawtooth'; osc.frequency.setValueAtTime(150, now); osc.frequency.linearRampToValueAtTime(80, now + 0.25);
-      gain.gain.setValueAtTime(0.3, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-      osc.start(now); osc.stop(now + 0.25);
-      if(navigator.vibrate) navigator.vibrate(80);
-    } else if (type === 'coin') {
-      osc.type = 'triangle'; osc.frequency.setValueAtTime(987.77, now); osc.frequency.setValueAtTime(1318.51, now + 0.08);
-      gain.gain.setValueAtTime(0.2, now); gain.gain.exponentialRampToValueAtTime(0.01, now + 0.25);
-      osc.start(now); osc.stop(now + 0.25);
-    } else if (type === 'tick') {
-      osc.type = 'square'; osc.frequency.setValueAtTime(800, now);
-      gain.gain.setValueAtTime(0.05, now); gain.gain.exponentialRampToValueAtTime(0.001, now + 0.04);
-      osc.start(now); osc.stop(now + 0.04);
+    function loadStep(stepIndex) {
+        document.getElementById('feedback').style.display = 'none';
+        
+        if (health <= 0) {
+            endGame(false);
+            return;
+        }
+
+        if (stepIndex >= storyData.length) {
+            endGame(true);
+            return;
+        }
+
+        const step = storyData[stepIndex];
+        document.getElementById('story-text').innerText = step.story;
+        
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
+
+        step.options.forEach(option => {
+            const btn = document.createElement('button');
+            btn.className = 'btn-option';
+            btn.innerText = option.text;
+            btn.onclick = () => handleChoice(option, stepIndex);
+            optionsContainer.appendChild(btn);
+        });
     }
-  } catch(e) {}
-}
 
-var firebaseConfig = {
-  apiKey: "AIzaSyDummyKeyForPublicReadWrite",
-  databaseURL: "https://med-game-leaderboard-default-rtdb.firebaseio.com"
-};
-if (!firebase.apps.length) { firebase.initializeApp(firebaseConfig); }
-var db = firebase.database();
+    function handleChoice(option, stepIndex) {
+        const feedbackEl = document.getElementById('feedback');
+        feedbackEl.style.display = 'block';
+        feedbackEl.innerText = option.feedback;
 
-var g=document.getElementById("g"), hud=document.getElementById("hud"), OP=document.getElementById("op");
-var MODE="solo", ROOM_CODE="", PH="", QUESTION_FORMAT="mcq";
-var hearts,score,streak,si,qi,locked,pb=0,coins=0,tmr=null,tl=0,tt=1;
-var playerName = "Doctor" + Math.floor(1000 + Math.random() * 9000);
-var playerId = "usr_" + Math.random().toString(36).substr(2, 9);
-var leaderboardData = [];
-var missedQuestions = [];
-var duelRef = null, allPlayersInRoom = {}, myReadyState = false;
+        if (option.correct) {
+            feedbackEl.className = 'feedback-banner feedback-correct';
+            if(stepIndex === 1) relics++; // Award relic on step 1
+        } else {
+            feedbackEl.className = 'feedback-banner feedback-wrong';
+            health -= 25;
+        }
 
-var items={heart:0,freeze:0,double:0};
-var doubleCoinActive=false;
-var bossHP=100;
-var currentTheme="light";
-var currentAvatar="brain";
-var unlockedThemes=["light"];
-var unlockedAvatars=["brain"];
-var loginStreak=1;
-var lastLoginDate="";
+        updateUI();
 
-try{
-  pb=+localStorage.getItem("ctg_pb")||0;
-  coins=+localStorage.getItem("ctg_coins")||0;
-  items=JSON.parse(localStorage.getItem("ctg_items"))||{heart:0,freeze:0,double:0};
-  var savedName = localStorage.getItem("ctg_name");
-  if(savedName) playerName = savedName;
-  var savedId = localStorage.getItem("ctg_id");
-  if(savedId) playerId = savedId; else localStorage.setItem("ctg_id", playerId);
-  
-  currentTheme = localStorage.getItem("ctg_theme") || "light";
-  currentAvatar = localStorage.getItem("ctg_avatar") || "brain";
-  unlockedThemes = JSON.parse(localStorage.getItem("ctg_unlocked_themes")) || ["light"];
-  unlockedAvatars = JSON.parse(localStorage.getItem("ctg_unlocked_avatars")) || ["brain"];
-  loginStreak = +localStorage.getItem("ctg_login_streak") || 1;
-  lastLoginDate = localStorage.getItem("ctg_login_date") || "";
-  
-  var cachedLB = localStorage.getItem("ctg_cached_lb");
-  if(cachedLB) leaderboardData = JSON.parse(cachedLB);
-}catch(e){}
+        // Disable buttons briefly to let player read feedback
+        const buttons = document.querySelectorAll('.btn-option');
+        buttons.forEach(b => b.disabled = true);
 
-function applyTheme(theme) {
-  currentTheme = theme;
-  document.documentElement.setAttribute("data-theme", theme);
-  localStorage.setItem("ctg_theme", theme);
-  saveState();
-}
-applyTheme(currentTheme);
-
-function checkDailyStreak() {
-  var today = new Date().toDateString();
-  if (lastLoginDate !== today) {
-    var yesterday = new Date(Date.now() - 86400000).toDateString();
-    if (lastLoginDate === yesterday) { loginStreak++; }
-    else if (lastLoginDate !== "") { loginStreak = 1; }
-    lastLoginDate = today;
-    saveState();
-    return true;
-  }
-  return false;
-}
-
-function saveState(){
-  try{
-    localStorage.setItem("ctg_pb",pb);
-    localStorage.setItem("ctg_coins",coins);
-    localStorage.setItem("ctg_items",JSON.stringify(items));
-    localStorage.setItem("ctg_name",playerName);
-    localStorage.setItem("ctg_theme",currentTheme);
-    localStorage.setItem("ctg_avatar",currentAvatar);
-    localStorage.setItem("ctg_unlocked_themes",JSON.stringify(unlockedThemes));
-    localStorage.setItem("ctg_unlocked_avatars",JSON.stringify(unlockedAvatars));
-    localStorage.setItem("ctg_login_streak",loginStreak);
-    localStorage.setItem("ctg_login_date",lastLoginDate);
-  }catch(e){}
-}
-
-db.ref("leaderboard").orderByChild("best").limitToLast(50).on("value", function(snapshot) {
-  var list = [];
-  snapshot.forEach(function(child) { list.push(child.val()); });
-  list.sort(function(a,b){ return b.best - a.best; });
-  leaderboardData = list;
-  try{ localStorage.setItem("ctg_cached_lb", JSON.stringify(list)); }catch(e){}
-  drawLB();
-}, function() { drawLB(); });
-
-function submitScoreToGlobal(finalScore){
-  if(finalScore <= 0) return;
-  var entry = { id: playerId, name: playerName, avatar: currentAvatar, best: finalScore, t: Date.now() };
-  db.ref("leaderboard/" + playerId).set(entry, function(err) {
-    if(err) {
-      var idx = leaderboardData.findIndex(p => p.id === playerId);
-      if(idx >= 0) { if(finalScore > leaderboardData[idx].best) leaderboardData[idx] = entry; }
-      else { leaderboardData.push(entry); }
-      leaderboardData.sort((a,b) => b.best - a.best);
-      drawLB();
+        setTimeout(() => {
+            currentStep++;
+            loadStep(currentStep);
+        }, 2200);
     }
-  });
-}
 
-// PROF. AUTIFI NEUROANATOMY QUESTIONS
-var S=[
-{n:"Stage 1: White Matter Fiber Classifier",d:"Analyze cerebral fiber bundles (Association, Commissural, Projection).",secMCQ:10,secSA:30,q:[
-["Which bundle connects the orbital gyri (in front) with the temporal pole across the stem of the lateral sulcus?",["Uncinate fasciculus","Cingulum","Superior longitudinal fasciculus"],0,"uncinate fasciculus","Uncinate fasciculus connects orbital gyri to temporal pole."],
-["Which statement regarding the Arcuate Fasciculus is TRUE?",["Connects Broca's & Wernicke's areas","Connects hemispheres directly","Connects optic chiasm to visual cortex"],0,"arcuate fasciculus","Arcuate fasciculus connects major language areas in dominant hemisphere."],
-["Which fiber bundle runs inside the cingulate gyrus to the hippocampus?",["Cingulum","Fronto-occipital fasciculus","Inferior longitudinal fasciculus"],0,"cingulum","Cingulum runs inside cingulate gyrus to hippocampus."],
-["Which fibers connect the cerebral cortex with lower centers (thalamus, brainstem, spinal cord)?",["Projection fibers","Commissural fibers","Association fibers"],0,"projection fibers","Projection fibers connect cortex to lower CNS centers."],
-["Select the tract representing corticofugal (efferent) motor projection fibers:",["Pyramidal tract","Sensory radiation","Optic radiation"],0,"pyramidal tract","Pyramidal tract carries motor efferents away from cortex."]]
-},
-{n:"Stage 2: Topographical Anatomy & 3D Trajectories",d:"Master 3D spatial alignment of the Internal Capsule limbs.",secMCQ:9,secSA:28,q:[
-["Which part of the internal capsule carries Corticonuclear motor fibers for head & neck?",["Genu","Anterior limb","Posterior limb"],0,"genu","Genu contains corticonuclear motor fibers."],
-["What is the front-to-back motor ordering in the Posterior Limb?",["Upper limb -> Trunk -> Lower limb","Lower limb -> Trunk -> Upper limb","Trunk -> Upper limb -> Lower limb"],0,"upper limb -> trunk -> lower limb","Corticospinal fibers in posterior limb are arranged: Upper limb -> Trunk -> Lower limb."],
-["Which part of the internal capsule carries the Optic Radiation?",["Retrolentiform part","Sublentiform part","Anterior limb"],0,"retrolentiform part","Retrolentiform part carries optic radiation."],
-["Which part of the internal capsule carries the Auditory Radiation?",["Sublentiform part","Retrolentiform part","Genu"],0,"sublentiform part","Sublentiform part carries auditory radiation."],
-["Where does the Posterior Commissure cross above the cerebral aqueduct?",["Pineal gland stalk","Lamina terminalis","Fornix crura"],0,"pineal gland stalk","Posterior commissure crosses in pineal stalk."]]
-},
-{n:"Stage 3: Angiology & Clinical Stroke Syndromes",d:"Map arterial supply & Charcot's versus Heubner's artery strokes.",secMCQ:8,secSA:25,q:[
-["Charcot's Artery (causing capsular hemiplegia) is a lateral striate branch of which vessel?",["Middle Cerebral Artery (MCA)","Anterior Cerebral Artery (ACA)","Posterior Cerebral Artery (PCA)"],0,"charcot's artery","Charcot's artery arises from MCA."],
-["Which vessel is a branch of Anterior Cerebral Artery (ACA) supplying the genu?",["Recurrent Artery of Heubner","Charcot's Artery","Anterior Choroidal Artery"],0,"recurrent artery of heubner","Recurrent Artery of Heubner arises from ACA."],
-["A stroke affecting Superior Thalamic Radiation in posterior limb causes loss of what on opposite side?",["Somatosensory sensations","Optic vision only","Auditory reflex"],0,"somatosensory sensations","Superior thalamic radiation carries contralateral sensory fibers."],
-["Which artery besides MCA lateral striate branches supplies the posterior limb?",["Anterior Choroidal Artery","Medial striate ACA branch","Posterior Communicating Artery"],0,"anterior choroidal artery","Anterior choroidal artery supplies posterior limb."],
-["Which major cerebral artery gives origin to Charcot's Artery?",["Middle Cerebral Artery","Anterior Cerebral Artery","Basilar Artery"],0,"middle cerebral artery","Middle Cerebral Artery gives rise to Charcot's artery."]]
-},
-{n:"Stage 4: Basal Ganglia Circuitry & Morphology",d:"Deep nuclei taxonomy, Neostriatum inputs, and efferent outputs.",secMCQ:8,secSA:25,q:[
-["Which two nuclei collectively form the Neostriatum?",["Caudate and Putamen","Putamen and Globus Pallidus","Globus Pallidus and Subthalamus"],0,"caudate and putamen","Neostriatum = Caudate nucleus + Putamen."],
-["Which nucleus serves as primary outflow/efferent center of corpus striatum?",["Globus Pallidus","Neostriatum","Claustrum"],0,"globus pallidus","Globus pallidus is primary outflow center."],
-["The dark, lateral part of lentiform nucleus is the:",["Putamen","Globus Pallidus","Caudate"],0,"putamen","Putamen is dark and lateral."],
-["The tail of Caudate Nucleus terminates anteriorly by fusing with which structure?",["Amygdaloid body","Subthalamic nucleus","Thalamic pulvinar"],0,"amygdaloid body","Tail of caudate fuses with amygdaloid body."],
-["Which thin gray matter sheet lies between external capsule and insula?",["Claustrum","Internal Capsule","Lamina terminalis"],0,"claustrum","Claustrum lies between external capsule and insula."]]
-},
-{n:"Boss: Dr. Inhibitor (Neuro-Lesions)",d:"Solve critical clinical cases under timed pressure!",secMCQ:6,secSA:22,q:[
-["Hemorrhage in posterior limb of internal capsule causes motor paralysis termed contralateral:",["Hemiplegia","Optic atrophy","Hyperreflexia"],0,"hemiplegia","Posterior limb lesion causes contralateral hemiplegia."],
-["Involuntary, jerky, irregular, nonrepetitive movements caused by striatum damage is termed:",["Chorea","Athetosis","Hemiballismus"],0,"chorea","Chorea presents with rapid jerky nonrepetitive movements."],
-["Basal ganglia disease presenting with resting tremor, rigidity, and bradykinesia:",["Parkinson's disease","Huntington's chorea","Hemiballismus"],0,"parkinson's disease","Parkinson's triad: tremor, rigidity, bradykinesia."],
-["Wild, violent flinging involuntary movements confined to ONE side of body is termed:",["Hemiballismus","Athetosis","Chorea"],0,"hemiballismus","Hemiballismus is violent unilateral flinging movement."],
-["Basal nuclei damage causes loss of automatic associated movements, exemplified by loss of arm:",["Swinging","Flexion","Extension"],0,"swinging","Basal ganglia control automatic associated movements like arm-swinging."]]
-}
-];
+    function updateUI() {
+        document.getElementById('health-val').innerText = health + ' HP';
+        document.getElementById('relics-val').innerText = relics;
+    }
 
-function esc(t){return String(t).replace(/[&<>"]/g,function(c){return{"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
-function shuf(a){for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
-function stopT(){clearInterval(tmr);tmr=null}
-function startT(sec,end){
-  stopT();tt=sec;tl=sec;
-  tmr=setInterval(function(){
-    tl-=.1;
-    var b=document.getElementById("tb"),c=document.getElementById("tc");
-    if(b){b.style.width=Math.max(0,tl/tt*100)+"%";b.style.background=tl/tt<.3?"var(--cor)":"var(--mint)"}
-    if(c)c.textContent="⏱ "+Math.max(0,Math.ceil(tl))+"s";
-    if(tl<=3 && tl>0 && Math.abs(Math.round(tl)-tl)<0.05) playSFX('tick');
-    if(tl<=0){stopT();end()}
-  },100)
-}
-function tbar(){return '<div class="tbar"><i id="tb"></i></div><div class="tc" id="tc"></div>'}
+    function endGame(victory) {
+        const optionsContainer = document.getElementById('options-container');
+        optionsContainer.innerHTML = '';
 
-function addCoins(amount){
-  var mult = doubleCoinActive ? 2 : 1;
-  coins += (amount * mult);
-  playSFX('coin');
-  saveState();
-}
+        if (victory) {
+            document.getElementById('story-text').innerHTML = `<strong>EXPEDITION SUCCESSFUL!</strong><br><br>You escaped the Tomb of Galen with <strong>${relics} Golden Relic(s)</strong> and <strong>${health} HP</strong> remaining! You have proven your mastery of medical knowledge under high-stakes conditions.`;
+        } else {
+            document.getElementById('story-text').innerHTML = `<strong>EXPEDITION FAILED!</strong><br><br>Your health reached 0. The ancient traps defeated you this time. Rest up, review your anatomical facts, and try the quest again!`;
+        }
 
-function triggerShake() {
-  g.classList.add("shake");
-  setTimeout(function(){ g.classList.remove("shake"); }, 300);
-}
+        document.getElementById('restart-btn').style.display = 'block';
+    }
 
-function hudUp(){
-  hud.hidden=false;
-  document.getElementById("hh").textContent="❤️".repeat(Math.max(hearts,0))+"🖤".repeat(3-Math.max(hearts,0));
-  document.getElementById("ss").textContent="⭐ "+score;
-  document.getElementById("st").textContent="🔥 "+streak;
-  document.getElementById("cc").innerHTML='<img class="avatar-img" src="'+AVATARS[currentAvatar]+'"> 🪙 '+coins;
-}
+    function restartGame() {
+        health = 100;
+        relics = 0;
+        currentStep = 0;
+        document.getElementById('restart-btn').style.display = 'none';
+        updateUI();
+        loadStep(0);
+    }
 
-function powerBar(){
-  return '<div class="pwr-bar">'+
-    '<button class="pwr-btn" onclick="usePwr(\'heart\')" '+(items.heart<=0||hearts>=3?'disabled':'')+'>❤️ +1 ('+items.heart+')</button>'+
-    '<button class="pwr-btn" onclick="usePwr(\'freeze\')" '+(items.freeze<=0?'disabled':'')+'>⏱️ +5s ('+items.freeze+')</button>'+
-    '<button class="pwr-btn" onclick="usePwr(\'double\')" '+(items.double<=0||doubleCoinActive?'disabled':'')+'>🪙 2x ('+(doubleCoinActive?'ON':items.double)+')</button>'+
-  '</div>';
-}
-
-function usePwr(type){
-  if(type==='heart' && items.heart>0 && hearts<3){ items.heart--; hearts++; }
-  else if(type==='freeze' && items.freeze>0){ items.freeze--; tl+=5; tt+=5; }
-  else if(type==='double' && items.double>0 && !doubleCoinActive){ items.double--; doubleCoinActive=true; }
-  saveState();hudUp();
-  var el = document.getElementById("pwr-container");
-  if(el) el.innerHTML = powerBar();
-}
-
-function drawLB(){
-  var el=document.getElementById("lb");if(!el)return;
-  var h='<p><b>Name:</b> <img class="avatar-img" src="'+AVATARS[currentAvatar]+'"> '+esc(playerName)+' <button class="btn" style="padding:2px 8px;font-size:.8rem" onclick="changeName()">Edit</button></p>';
-  h+='<p><b>Your Best: '+pb+' pts | 🪙 Balance: '+coins+' | 🔥 Streak: '+loginStreak+'d</b></p>';
-  h+='<h2>🏆 Global Leaderboard ('+leaderboardData.length+')</h2>';
-  if(!leaderboardData.length) h+='<p>No high scores recorded yet!</p>';
-  else{
-    h+='<ol>';
-    leaderboardData.forEach(function(r,i){
-      var medal = ["🥇","🥈","🥉"][i] || (i+1)+".";
-      var isMe = r.id === playerId;
-      var av = r.avatar && AVATARS[r.avatar] ? AVATARS[r.avatar] : AVATARS.brain;
-      h+='<li class="'+(isMe?"me":"")+'"><span>'+medal+' <img class="avatar-img" src="'+av+'"> '+esc(r.name)+(isMe?' (You)':'')+'</span><span>'+r.best+' pts</span></li>';
-    });
-    h+='</ol>';
-  }
-  el.innerHTML=h;
-}
-
-function changeName(){
-  var newName = prompt("Enter your doctor/student name:", playerName);
-  if(newName && newName.trim()){
-    playerName = newName.trim().substring(0, 18);
-    saveState();
-    if(pb > 0) submitScoreToGlobal(pb);
-    drawLB();
-  }
-}
-
-function title(){
- stopT();hud.hidden=true;OP.hidden=true;MODE="solo";doubleCoinActive=false;
- g.className="card hero";
- 
- var showRewardModal = checkDailyStreak();
- var streakBonusHtml = showRewardModal ? '<div style="background:var(--card);padding:10px;border-radius:12px;margin-bottom:10px;border:2px solid var(--line)">🎁 <b>Daily Study Reward!</b> Day '+loginStreak+' streak! Claimed +'+(loginStreak*20)+' 🪙</div>' : '';
- if(showRewardModal) addCoins(loginStreak * 20);
-
- g.innerHTML=streakBonusHtml+'<h1>Neuroanatomy Challenge 🧠</h1><p>Master White Matter, Internal Capsule & Basal Nuclei (Prof. Autifi Lecture)!</p>'+
- '<div class="mode-toggle">'+
- '<button class="mode-btn '+(QUESTION_FORMAT==='mcq'?'active':'')+'" id="mMCQ">Multiple Choice</button>'+
- '<button class="mode-btn '+(QUESTION_FORMAT==='sa'?'active':'')+'" id="mSA">Short Answer</button>'+
- '</div>'+
- '<div class="row">'+
- '<button class="btn" id="go">Play Challenge</button>'+
- '<button class="btn" id="surv" style="background:var(--cor);color:#fff;">⚡ Sudden Death</button>'+
- '<button class="btn" id="shp" style="background:var(--mint)">🛍️ Shop</button>'+
- '</div><div class="lb" id="lb"></div>';
-
- document.getElementById("mMCQ").onclick=function(){QUESTION_FORMAT="mcq";title()};
- document.getElementById("mSA").onclick=function(){QUESTION_FORMAT="sa";title()};
- document.getElementById("go").onclick=function(){MODE="solo";hearts=3;score=0;streak=0;si=0;missedQuestions=[];intro()};
- document.getElementById("surv").onclick=startSurvivalMode;
- document.getElementById("shp").onclick=openShop;
- drawLB();
-}
-
-function startSurvivalMode(){
-  MODE = "survival"; hearts = 1; score = 0; streak = 0; si = 0; missedQuestions = [];
-  g.className = "card";
-  var timeAllowed = QUESTION_FORMAT === "sa" ? 12 : 5;
-  g.innerHTML = '<h2>⚡ Sudden Death Survival</h2><p>One heart. '+timeAllowed+' seconds per question. Maximum speed!</p><button class="btn" id="go">Begin Sudden Death</button>';
-  document.getElementById("go").onclick = function(){
-    var allQ = [];
-    S.forEach(s => s.q.forEach(q => allQ.push(q)));
-    S[0].o = shuf(allQ);
-    qi = 0;
-    showQ();
-  };
-}
-
-function openShop(){
-  stopT();hud.hidden=true;OP.hidden=true;
-  g.className="card";
-  
-  var getThemeBtn = function(tName, cost) {
-    if(currentTheme === tName) return '<button class="btn" style="background:var(--mint)" disabled>Equipped ✓</button>';
-    if(unlockedThemes.includes(tName)) return '<button class="btn" onclick="applyTheme(\''+tName+'\'); openShop();">Equip</button>';
-    return '<button class="btn" onclick="buyTheme(\''+tName+'\', '+cost+')">'+cost+' 🪙</button>';
-  };
-
-  g.innerHTML='<h2>🛍️ Game Shop</h2><p>Balance: <b>🪙 '+coins+' coins</b></p>'+
-  '<h3>Power-ups</h3>'+
-  '<div class="shop-item"><div><b>❤️ Extra Heart</b><br><small>Restores 1 heart mid-game</small></div><button class="btn" onclick="buyItem(\'heart\', 50)">50 🪙</button></div>'+
-  '<div class="shop-item"><div><b>⏱️ Freeze Time</b><br><small>Adds +5 seconds to timer</small></div><button class="btn" onclick="buyItem(\'freeze\', 30)">30 🪙</button></div>'+
-  '<div class="shop-item"><div><b>🪙 Double Coins</b><br><small>2x coin earnings for 1 stage</small></div><button class="btn" onclick="buyItem(\'double\', 40)">40 🪙</button></div>'+
-  '<h3>Avatars 🖼️</h3>'+
-  '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.brain+'"> <b>Brain</b></div>'+(unlockedAvatars.includes('brain') ? '<button class="btn" onclick="setAvatar(\'brain\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'brain\', 50)">50 🪙</button>')+'</div>'+
-  '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.dna+'"> <b>DNA Helix</b></div>'+(unlockedAvatars.includes('dna') ? '<button class="btn" onclick="setAvatar(\'dna\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'dna\', 100)">100 🪙</button>')+'</div>'+
-  '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.stethoscope+'"> <b>Stethoscope</b></div>'+(unlockedAvatars.includes('stethoscope') ? '<button class="btn" onclick="setAvatar(\'stethoscope\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'stethoscope\', 150)">150 🪙</button>')+'</div>'+
-  '<div class="shop-item"><div><img class="avatar-img" src="'+AVATARS.microscope+'"> <b>Microscope</b></div>'+(unlockedAvatars.includes('microscope') ? '<button class="btn" onclick="setAvatar(\'microscope\')">Equip</button>' : '<button class="btn" onclick="buyAvatar(\'microscope\', 200)">200 🪙</button>')+'</div>'+
-  '<h3>Themes 🎨</h3>'+
-  '<div class="shop-item"><div><b>Warm Parchment (Light)</b></div>'+getThemeBtn('light', 0)+'</div>'+
-  '<div class="shop-item"><div><b>Midnight Medical (Dark)</b></div>'+getThemeBtn('dark', 100)+'</div>'+
-  '<div class="shop-item"><div><b>Nordic Slate (Cool)</b></div>'+getThemeBtn('nordic', 100)+'</div>'+
-  '<div class="fb" id="sfb"></div>'+
-  '<button class="opt" id="bk">Back to Menu</button>';
-  document.getElementById("bk").onclick=title;
-}
-
-function buyItem(type, cost){
-  var sfb=document.getElementById("sfb");
-  if(coins >= cost){ coins -= cost; items[type]=(items[type]||0)+1; saveState(); sfb.textContent="✅ Purchased successfully!"; openShop(); }
-  else { sfb.textContent="❌ Not enough coins!"; }
-}
-
-function buyTheme(t, cost){
-  if(coins >= cost){ coins -= cost; unlockedThemes.push(t); applyTheme(t); openShop(); }
-}
-
-function buyAvatar(a, cost){
-  if(coins >= cost){ coins -= cost; unlockedAvatars.push(a); setAvatar(a); openShop(); }
-}
-
-function setAvatar(a){
-  currentAvatar = a; saveState();
-  if(pb > 0) submitScoreToGlobal(pb); openShop();
-}
-
-function intro(){
- hudUp();var s=S[si];g.className="card";
- doubleCoinActive=false;
- if(si === 4) bossHP = 100;
- var timeAllowed = MODE==="survival" ? (QUESTION_FORMAT==="sa"?12:5) : (QUESTION_FORMAT==="sa"?s.secSA:s.secMCQ);
- g.innerHTML='<h2>'+s.n+'</h2><p>'+s.d+'</p><p>Format: <b>'+(QUESTION_FORMAT==='sa'?'Short Answer Typing':'Multiple Choice')+'</b></p><p><b>⏱️ '+timeAllowed+' seconds per question.</b></p><button class="btn" id="go">Start Stage</button>';
- document.getElementById("go").onclick=function(){qi=0;s.o=shuf(s.q.slice());showQ()};
-}
-
-function ok(){
-  playSFX('ok'); streak++;
-  var p=10+Math.min(streak,5)*2+Math.round(Math.max(tl,0)/tt*8);
-  score+=p; addCoins(5); return p;
-}
-
-function bad(){
-  playSFX('bad'); triggerShake();
-  streak=0;hearts--;hudUp();
-  if(hearts<=0){setTimeout(over,1200);return true}
-  return false;
-}
-function bar(n,t){return '<div class="bar"><i style="width:'+(n/t*100)+'%"></i></div>'}
-
-function checkShortAnswer(userStr, targetStr){
-  var u = userStr.trim().toLowerCase().replace(/[^a-z0-9 ]/g, "");
-  var t = targetStr.trim().toLowerCase().replace(/[^a-z0-9 ]/g, "");
-  if(u === t) return true;
-  if(t.length > 5 && u.length > 4 && (t.includes(u) || u.includes(t))) return true;
-  return false;
-}
-
-function showQ(){
- var s=S[si],q=s.o[qi];locked=false;hudUp();
- var bossHtml = (si === 4 && MODE!=="survival") ? '<div class="boss-box"><b>👾 Dr. Inhibitor (Clinical Cases)</b><div class="boss-hp"><i style="width:'+bossHP+'%"></i></div></div>' : '';
- var timeAllowed = MODE==="survival" ? (QUESTION_FORMAT==="sa"?12:5) : (QUESTION_FORMAT==="sa"?s.secSA:s.secMCQ);
- 
- var h=bossHtml+bar(qi,s.o.length)+'<div id="pwr-container">'+powerBar()+'</div>'+tbar()+'<div class="q">'+q[0]+'</div>';
-
- if(QUESTION_FORMAT === "sa"){
-   h += '<input type="text" id="ansInput" placeholder="Type answer here..." autocomplete="off">'+
-        '<button class="btn" id="subBtn" style="width:100%;margin-top:6px;">Submit Answer</button>';
-   g.innerHTML=h+'<div class="fb" aria-live="polite"></div>';
-   var inp = document.getElementById("ansInput");
-   inp.focus();
-   inp.onkeyup = function(e){ if(e.key === "Enter") processSA(); };
-   document.getElementById("subBtn").onclick = processSA;
-   startT(timeAllowed, function(){ processSA(true); });
- } else {
-   var arr = [0,1,2]; shuf(arr);
-   arr.forEach(function(k){h+='<button class="opt" data-k="'+k+'">'+q[1][k]+'</button>'});
-   g.innerHTML=h+'<div class="fb" aria-live="polite"></div>';
-   g.querySelectorAll(".opt").forEach(function(b){b.onclick=function(){pickMCQ(+b.dataset.k,b)}});
-   startT(timeAllowed, function(){ pickMCQ(-1); });
- }
-}
-
-function pickMCQ(k,b){
- if(locked)return;locked=true;stopT();var s=S[si],q=s.o[qi],fb=g.querySelector(".fb"),dead=false;
- g.querySelectorAll(".opt").forEach(function(x){if(+x.dataset.k===q[2])x.classList.add("ok")});
- if(k===q[2]){
-   var p=ok();
-   if(si === 4 && MODE!=="survival") { bossHP = Math.max(0, bossHP - 25); playSFX('strike'); }
-   fb.textContent="✅ Correct! +"+p+" pts (+"+(doubleCoinActive?10:5)+" 🪙). "+q[4];
- }
- else{
-   if(b)b.classList.add("no");
-   fb.textContent=(k<0?"⏰ Time's up! ":"❌ Incorrect! ") + q[4];
-   missedQuestions.push({ question: q[0], correctAnswer: q[1][q[2]], explanation: q[4] });
-   dead=bad();
- }
- hudUp();if(dead)return;
- setTimeout(function(){qi++;if(qi>=s.o.length)stageDone();else showQ()},1800);
-}
-
-function processSA(isTimeout){
- if(locked)return;locked=true;stopT();var s=S[si],q=s.o[qi],fb=g.querySelector(".fb"),dead=false;
- var userAns = isTimeout ? "" : document.getElementById("ansInput").value;
- var isCorrect = !isTimeout && checkShortAnswer(userAns, q[3]);
-
- if(isCorrect){
-   var p=ok();
-   if(si === 4 && MODE!=="survival") { bossHP = Math.max(0, bossHP - 25); playSFX('strike'); }
-   fb.textContent="✅ Correct! +"+p+" pts (+"+(doubleCoinActive?10:5)+" 🪙). "+q[4];
- }
- else{
-   fb.textContent=(isTimeout ? "⏰ Time's up! " : "❌ Incorrect! ") + "Correct answer: " + q[3] + ". " + q[4];
-   missedQuestions.push({ question: q[0], correctAnswer: q[3], explanation: q[4] });
-   dead=bad();
- }
- hudUp();if(dead)return;
- setTimeout(function(){qi++;if(qi>=s.o.length)stageDone();else showQ()},2200);
-}
-
-function stageDone(){
- stopT();si++;addCoins(25);saveState();
- if(si>=S.length || MODE==="survival")return win();
- g.innerHTML='<h2>Stage Clear! 🧠</h2><p>Score: '+score+'. Hearts remaining: '+hearts+'.</p><p>Stage Bonus: <b>+'+(doubleCoinActive?50:25)+' Coins 🪙</b></p><button class="btn" id="go">Next Stage</button>';
- document.getElementById("go").onclick=intro;
-}
-
-function win(){
- var bonus=hearts*20;score+=bonus;addCoins(50);
- var isNewBest = score > pb;
- if(isNewBest){ pb = score; saveState(); }
- submitScoreToGlobal(score);
- hudUp();
- g.innerHTML='<p class="big">'+score+'</p><h2>Master of Neuroanatomy 🏆</h2><p>Run Complete! Bonus +'+bonus+' pts & +50 🪙.'+(isNewBest?' <b>New High Score! 🎉</b>':'')+'</p><div class="row"><button class="btn" id="go">Play Again</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div><div class="lb" id="lb"></div>';
- document.getElementById("go").onclick=title;
- document.getElementById("rev").onclick=drawMistakesReview;
- drawLB();
-}
-
-function over(){
- stopT();
- var isNewBest = score > pb;
- if(isNewBest){ pb = score; saveState(); }
- submitScoreToGlobal(score);
- g.innerHTML='<h2>Exam Failed 💔</h2><p>Review Prof. Autifi\'s lecture slides and try again! Score: '+score+(isNewBest?'. <b>New High Score!</b>':'.')+'</p><div class="row"><button class="btn" id="go">Try Again</button><button class="btn" id="rev" style="background:var(--sky)">📝 Review Mistakes ('+missedQuestions.length+')</button></div><div class="lb" id="lb"></div>';
- document.getElementById("go").onclick=title;
- document.getElementById("rev").onclick=drawMistakesReview;
- drawLB();
-}
-
-function drawMistakesReview(){
-  stopT();
-  hud.hidden = true;
-  OP.hidden = true;
-  g.className = "card";
-  
-  if(missedQuestions.length === 0){
-    g.innerHTML = '<h2>Flawless Performance! 🎉</h2><p>You answered every single question correctly this run!</p><button class="btn" id="mmenu">Main Menu</button>';
-    document.getElementById("mmenu").onclick = title;
-    return;
-  }
-  
-  var h = '<h2>📝 Mistakes Review (' + missedQuestions.length + ')</h2><div style="max-height:320px; overflow-y:auto; margin:12px 0;">';
-  missedQuestions.forEach(function(item, idx){
-    h += '<div class="review-item">' +
-      '<b>Q' + (idx + 1) + ': ' + esc(item.question) + '</b><br>' +
-      '<span style="color:var(--mint)">✅ <b>Correct Answer:</b> ' + esc(item.correctAnswer) + '</span><br>' +
-      '<small>💡 <i>' + esc(item.explanation) + '</i></small>' +
-    '</div>';
-  });
-  h += '</div><button class="btn" id="mmenu">Main Menu</button>';
-  g.innerHTML = h;
-  
-  document.getElementById("mmenu").onclick = title;
-}
-
-title();
+    // Start game on load
+    loadStep(0);
 </script>
+
 </body>
 </html>
-
-```
