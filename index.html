@@ -3,290 +3,375 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>The Tomb of Galen: An Uncharted Medical Quest</title>
+    <title>Uncharted Expeditions: The Temple of Galen</title>
     <style>
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Georgia', 'Times New Roman', serif;
-        }
-
+        * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
         body {
-            background-color: #0d0f12;
+            background-color: #080a0c;
             color: #e0d8c3;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .game-container {
-            max-width: 750px;
-            width: 100%;
-            background: #181c22;
-            border: 2px solid #8c6d3f;
-            border-radius: 12px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.8);
-            overflow: hidden;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             display: flex;
             flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            overflow: hidden;
         }
 
-        .header {
-            background: linear-gradient(180deg, #2a2015 0%, #181c22 100%);
-            padding: 20px;
-            text-align: center;
-            border-bottom: 2px solid #8c6d3f;
+        #game-wrapper {
+            position: relative;
+            box-shadow: 0 0 30px rgba(0,0,0,0.9);
+            border: 3px solid #8c6d3f;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
-        .header h1 {
-            color: #d4af37;
-            font-size: 1.8rem;
-            letter-spacing: 2px;
-            text-transform: uppercase;
+        canvas { background-color: #12151b; display: block; }
+
+        /* HUD Overlay */
+        .hud {
+            position: absolute;
+            top: 12px;
+            left: 12px;
+            right: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            font-weight: bold;
             text-shadow: 2px 2px 4px #000;
         }
 
-        .stats-bar {
-            display: flex;
-            justify-content: space-around;
-            background: #111418;
-            padding: 10px;
-            border-bottom: 1px solid #332a1e;
-            font-size: 0.9rem;
-            color: #a89f91;
-        }
-
-        .stat-val {
-            color: #d4af37;
-            font-weight: bold;
-        }
-
-        .story-section {
-            padding: 25px;
-            line-height: 1.6;
-            font-size: 1.05rem;
-            min-height: 160px;
-            background: #14171c;
-        }
-
-        .story-text {
-            margin-bottom: 15px;
-        }
-
-        .options-container {
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            background: #181c22;
-        }
-
-        .btn-option {
-            background: #252a33;
-            color: #d8cfbe;
-            border: 1px solid #57462c;
-            padding: 14px 18px;
+        .hud-card {
+            background: rgba(16, 20, 26, 0.85);
+            padding: 8px 16px;
             border-radius: 6px;
+            border: 1px solid #57462c;
+        }
+
+        .health-bar-container {
+            width: 160px;
+            height: 14px;
+            background: #2a1515;
+            border: 1px solid #702828;
+            border-radius: 7px;
+            overflow: hidden;
+            margin-top: 4px;
+        }
+
+        .health-bar-fill {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, #d93636, #ff6b6b);
+            transition: width 0.2s ease;
+        }
+
+        /* Quiz Overlay Modal */
+        #quiz-modal {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(8, 10, 12, 0.92);
+            display: none;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            text-align: center;
+            z-index: 10;
+        }
+
+        .quiz-box {
+            max-width: 580px;
+            background: #181c24;
+            border: 2px solid #d4af37;
+            border-radius: 10px;
+            padding: 24px;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.2);
+        }
+
+        .quiz-title { color: #d4af37; font-size: 1.2rem; margin-bottom: 12px; text-transform: uppercase; }
+        .quiz-text { font-size: 1.05rem; margin-bottom: 20px; line-height: 1.5; color: #ece5d8; }
+
+        .btn-grid { display: flex; flex-direction: column; gap: 10px; }
+        .quiz-btn {
+            background: #252b36;
+            color: #e0d8c3;
+            border: 1px solid #57462c;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 0.95rem;
             cursor: pointer;
             text-align: left;
-            font-size: 0.95rem;
-            transition: all 0.2s ease;
+            transition: all 0.2s;
         }
 
-        .btn-option:hover {
-            background: #3b3123;
-            border-color: #d4af37;
-            color: #fff;
-            transform: translateX(4px);
-        }
+        .quiz-btn:hover { background: #3d3324; border-color: #d4af37; color: #fff; }
 
-        .feedback-banner {
-            padding: 12px 20px;
-            font-weight: bold;
-            display: none;
-            text-align: center;
-        }
-
-        .feedback-correct {
-            background: #1c3b22;
-            color: #62d978;
-            border-top: 1px solid #2e663a;
-        }
-
-        .feedback-wrong {
-            background: #3b1c1c;
-            color: #d96262;
-            border-top: 1px solid #662e2e;
-        }
-
-        .restart-btn {
-            display: none;
-            margin: 20px auto;
-            padding: 12px 24px;
-            background: #d4af37;
-            color: #000;
-            border: none;
-            font-weight: bold;
-            border-radius: 6px;
-            cursor: pointer;
-            text-transform: uppercase;
-        }
-
-        .restart-btn:hover {
-            background: #f0c946;
+        .controls-hint {
+            margin-top: 12px;
+            font-size: 0.85rem;
+            color: #8c8375;
         }
     </style>
 </head>
 <body>
 
-<div class="game-container">
-    <div class="header">
-        <h1>Tomb of Galen</h1>
-    </div>
+<div id="game-wrapper">
+    <canvas id="gameCanvas" width="800" height="500"></canvas>
 
-    <div class="stats-bar">
-        <div>Explorer: <span class="stat-val" id="player-name">Dr. Drake</span></div>
-        <div>Health: <span class="stat-val" id="health-val">100 HP</span></div>
-        <div>Relics Found: <span class="stat-val" id="relics-val">0</span></div>
-    </div>
-
-    <div class="story-section">
-        <div class="story-text" id="story-text">
-            Loading expedition...
+    <!-- Real-Time HUD -->
+    <div class="hud">
+        <div class="hud-card">
+            <div>EXPLORER DRAKE</div>
+            <div class="health-bar-container">
+                <div class="health-bar-fill" id="hp-bar"></div>
+            </div>
+        </div>
+        <div class="hud-card">
+            RELICS: <span id="relic-count" style="color:#d4af37;">0/3</span>
         </div>
     </div>
 
-    <div class="feedback-banner" id="feedback"></div>
-
-    <div class="options-container" id="options-container">
-        <!-- Dynamic options will appear here -->
+    <!-- Interactive Medical Puzzle Modal -->
+    <div id="quiz-modal">
+        <div class="quiz-box">
+            <div class="quiz-title">Ancient Altar Riddle</div>
+            <div class="quiz-text" id="quiz-question">Question text goes here...</div>
+            <div class="btn-grid" id="quiz-options"></div>
+        </div>
     </div>
+</div>
 
-    <button class="restart-btn" id="restart-btn" onclick="restartGame()">Try Quest Again</button>
+<div class="controls-hint">
+    [W, A, S, D] Move Explorer | [SPACEBAR] Attack Guardians | Walk to Glowing Altars to Solve Medical Riddles
 </div>
 
 <script>
-    // Game State Variables
-    let health = 100;
-    let relics = 0;
-    let currentStep = 0;
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
 
-    // Quest Decision Tree & Quiz Data
-    const storyData = [
+    // Key Listener State
+    const keys = {};
+    window.addEventListener('keydown', e => keys[e.code] = true);
+    window.addEventListener('keyup', e => keys[e.code] = false);
+
+    // Game Variables
+    let isPaused = false;
+    let relicsFound = 0;
+    let attackCooldown = 0;
+    let attackActive = false;
+
+    // Player Object
+    const player = {
+        x: 80, y: 230, size: 24, speed: 3.2, hp: 100, maxHp: 100,
+        facing: 'right'
+    };
+
+    // Enemies (Guardians)
+    const enemies = [
+        { x: 300, y: 150, size: 22, hp: 30, maxHp: 30, vx: 1.5, vy: 1, color: '#aa3838' },
+        { x: 550, y: 320, size: 22, hp: 30, maxHp: 30, vx: -1, vy: 1.5, color: '#aa3838' }
+    ];
+
+    // Glowing Medical Altars
+    const altars = [
         {
-            id: 0,
-            story: "You light your torch inside the damp, ancient anatomical chamber. Embedded in the stone door ahead is a carved riddle left behind by ancient physicians: 'To unlock the passage without triggering the collapsing ceiling, identify which cranial nerve provides parasympathetic innervation to the heart, lungs, and digestive tract.'",
-            options: [
-                { text: "A. Cranial Nerve V (Trigeminal)", correct: false, feedback: "Wrong door mechanism! Traps activate—spikes graze your arm. (-25 HP)" },
-                { text: "B. Cranial Nerve X (Vagus Nerve)", correct: true, feedback: "Correct! Heavy gears turn, and the ancient stone gate slides open smoothly." },
-                { text: "C. Cranial Nerve VII (Facial)", correct: false, feedback: "Incorrect. Dust rains down as a tripwire triggers. (-25 HP)" }
-            ]
+            x: 240, y: 100, size: 30, active: true,
+            q: "To unlock the chamber, identify which cranial nerve carries parasympathetic signals to the heart & gastrointestinal tract:",
+            opts: ["CN V (Trigeminal)", "CN X (Vagus Nerve)", "CN VII (Facial)"],
+            correct: 1
         },
         {
-            id: 1,
-            story: "Passing into the Inner Sanctum, you find an ancient altar with two pedestals holding glowing flasks. An inscription warns: 'A traveler suffers severe hypotension, bradycardia, and warm dry skin following a traumatic high cervical spinal cord injury. Choose the antidote reflecting the underlying shock mechanism.'",
-            options: [
-                { text: "A. Administer Atropine & Vasopressors (Neurogenic Shock)", correct: true, feedback: "Spot on! The pedestal unlocks and you retrieve an ancient Golden Caduceus relic! (+1 Relic)" },
-                { text: "B. Administer Massive Fluid Bolus only (Hypovolemic Shock)", correct: false, feedback: "Incorrect diagnosis! The altar vents poisonous mist. (-25 HP)" },
-                { text: "C. Administer Epinephrine for Anaphylaxis", correct: false, feedback: "Wrong mechanism! A dart hits your shoulder. (-25 HP)" }
-            ]
+            x: 480, y: 380, size: 30, active: true,
+            q: "A severe neurogenic shock patient exhibits hypotension and bradycardia. Which primary mechanism explains this?",
+            opts: ["Loss of sympathetic vascular tone", "Severe systemic volume depletion", "Histamine-mediated vasodilation"],
+            correct: 0
         },
         {
-            id: 2,
-            story: "You reach the treasure vault's final door guarded by two bronze statues. The door asks for the core hallmark of Parkinson's Disease in neuro-pathology: 'Which anatomical structure undergoes progressive loss of dopaminergic neurons?'",
-            options: [
-                { text: "A. Hippocampus", correct: false, feedback: "Incorrect. The floor beneath you tilts dangerously! (-25 HP)" },
-                { text: "B. Substantia Nigra pars compacta", correct: true, feedback: "A golden glow illuminates the chamber as the final treasure vault opens!" },
-                { text: "C. Cerebellar Cortex", correct: false, feedback: "Wrong! A pendulum blade swings from the ceiling. (-25 HP)" }
-            ]
+            x: 700, y: 220, size: 30, active: true,
+            q: "Which specific brain area undergoes selective degeneration of dopaminergic neurons in Parkinson's Disease?",
+            opts: ["Hippocampus CA1 region", "Substantia Nigra pars compacta", "Cerebellar Purkinje cells"],
+            correct: 1
         }
     ];
 
-    function loadStep(stepIndex) {
-        document.getElementById('feedback').style.display = 'none';
-        
-        if (health <= 0) {
-            endGame(false);
-            return;
+    let currentAltar = null;
+
+    // --- GAME LOOP ---
+    function update() {
+        if (isPaused) return;
+
+        // 1. Player Movement Logic
+        let dx = 0, dy = 0;
+        if (keys['KeyW'] || keys['ArrowUp']) { dy -= 1; }
+        if (keys['KeyS'] || keys['ArrowDown']) { dy += 1; }
+        if (keys['KeyA'] || keys['ArrowLeft']) { dx -= 1; player.facing = 'left'; }
+        if (keys['KeyD'] || keys['ArrowRight']) { dx += 1; player.facing = 'right'; }
+
+        // Normalize speed
+        if (dx !== 0 && dy !== 0) { dx *= 0.7071; dy *= 0.7071; }
+
+        player.x = Math.max(20, Math.min(canvas.width - 20, player.x + dx * player.speed));
+        player.y = Math.max(20, Math.min(canvas.height - 20, player.y + dy * player.speed));
+
+        // 2. Attack Logic (Spacebar)
+        if (keys['Space'] && attackCooldown <= 0) {
+            attackActive = true;
+            attackCooldown = 20; // frames
+            
+            // Damage nearby enemies
+            enemies.forEach(e => {
+                let dist = Math.hypot(e.x - player.x, e.y - player.y);
+                if (dist < 55) {
+                    e.hp -= 15;
+                    // Knockback
+                    e.x += (player.facing === 'right' ? 30 : -30);
+                }
+            });
         }
 
-        if (stepIndex >= storyData.length) {
-            endGame(true);
-            return;
-        }
+        if (attackCooldown > 0) attackCooldown--;
+        if (attackCooldown < 12) attackActive = false;
 
-        const step = storyData[stepIndex];
-        document.getElementById('story-text').innerText = step.story;
-        
-        const optionsContainer = document.getElementById('options-container');
-        optionsContainer.innerHTML = '';
+        // 3. Enemy Movement & Collision
+        enemies.forEach((e, idx) => {
+            if (e.hp <= 0) return;
 
-        step.options.forEach(option => {
-            const btn = document.createElement('button');
-            btn.className = 'btn-option';
-            btn.innerText = option.text;
-            btn.onclick = () => handleChoice(option, stepIndex);
-            optionsContainer.appendChild(btn);
+            e.x += e.vx;
+            e.y += e.vy;
+
+            // Bounce off walls
+            if (e.x < 30 || e.x > canvas.width - 30) e.vx *= -1;
+            if (e.y < 30 || e.y > canvas.height - 30) e.vy *= -1;
+
+            // Hurt player on touch
+            let dist = Math.hypot(e.x - player.x, e.y - player.y);
+            if (dist < player.size + e.size) {
+                player.hp = Math.max(0, player.hp - 0.4);
+                document.getElementById('hp-bar').style.width = (player.hp / player.maxHp * 100) + '%';
+            }
+        });
+
+        // 4. Check Altar Interactions
+        altars.forEach(a => {
+            if (!a.active) return;
+            let dist = Math.hypot(a.x - player.x, a.y - player.y);
+            if (dist < player.size + a.size) {
+                openQuiz(a);
+            }
         });
     }
 
-    function handleChoice(option, stepIndex) {
-        const feedbackEl = document.getElementById('feedback');
-        feedbackEl.style.display = 'block';
-        feedbackEl.innerText = option.feedback;
+    // --- RENDER ENGINE ---
+    function draw() {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-        if (option.correct) {
-            feedbackEl.className = 'feedback-banner feedback-correct';
-            if(stepIndex === 1) relics++; // Award relic on step 1
-        } else {
-            feedbackEl.className = 'feedback-banner feedback-wrong';
-            health -= 25;
+        // Draw Floor Grid (Temple Tiles)
+        ctx.strokeStyle = '#1e232d';
+        ctx.lineWidth = 1;
+        for (let x = 0; x < canvas.width; x += 40) {
+            ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+        }
+        for (let y = 0; y < canvas.height; y += 40) {
+            ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
         }
 
-        updateUI();
+        // Draw Glowing Altars
+        altars.forEach(a => {
+            if (!a.active) return;
+            ctx.shadowBlur = 15;
+            ctx.shadowColor = '#d4af37';
+            ctx.fillStyle = '#d4af37';
+            ctx.beginPath();
+            ctx.arc(a.x, a.y, a.size / 2, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.shadowBlur = 0; // reset
+        });
 
-        // Disable buttons briefly to let player read feedback
-        const buttons = document.querySelectorAll('.btn-option');
-        buttons.forEach(b => b.disabled = true);
+        // Draw Enemies (Shadow Beasts)
+        enemies.forEach(e => {
+            if (e.hp <= 0) return;
+            ctx.fillStyle = e.color;
+            ctx.beginPath();
+            ctx.arc(e.x, e.y, e.size / 2, 0, Math.PI * 2);
+            ctx.fill();
 
-        setTimeout(() => {
-            currentStep++;
-            loadStep(currentStep);
-        }, 2200);
-    }
+            // Enemy HP bar
+            ctx.fillStyle = '#10141a';
+            ctx.fillRect(e.x - 12, e.y - 20, 24, 4);
+            ctx.fillStyle = '#22c55e';
+            ctx.fillRect(e.x - 12, e.y - 20, (e.hp / e.maxHp) * 24, 4);
+        });
 
-    function updateUI() {
-        document.getElementById('health-val').innerText = health + ' HP';
-        document.getElementById('relics-val').innerText = relics;
-    }
-
-    function endGame(victory) {
-        const optionsContainer = document.getElementById('options-container');
-        optionsContainer.innerHTML = '';
-
-        if (victory) {
-            document.getElementById('story-text').innerHTML = `<strong>EXPEDITION SUCCESSFUL!</strong><br><br>You escaped the Tomb of Galen with <strong>${relics} Golden Relic(s)</strong> and <strong>${health} HP</strong> remaining! You have proven your mastery of medical knowledge under high-stakes conditions.`;
-        } else {
-            document.getElementById('story-text').innerHTML = `<strong>EXPEDITION FAILED!</strong><br><br>Your health reached 0. The ancient traps defeated you this time. Rest up, review your anatomical facts, and try the quest again!`;
+        // Draw Attack Swing Slash
+        if (attackActive) {
+            ctx.strokeStyle = '#60a5fa';
+            ctx.lineWidth = 4;
+            ctx.beginPath();
+            let startAngle = player.facing === 'right' ? -Math.PI / 4 : Math.PI * 3/4;
+            let endAngle = player.facing === 'right' ? Math.PI / 4 : Math.PI * 5/4;
+            ctx.arc(player.x, player.y, 40, startAngle, endAngle);
+            ctx.stroke();
         }
 
-        document.getElementById('restart-btn').style.display = 'block';
+        // Draw Player Sprite (Explorer Drake)
+        ctx.fillStyle = '#3b82f6'; // Drake blue jacket
+        ctx.beginPath();
+        ctx.arc(player.x, player.y, player.size / 2, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Player Eyes/Direction indicator
+        ctx.fillStyle = '#fff';
+        let eyeOffset = player.facing === 'right' ? 5 : -5;
+        ctx.beginPath();
+        ctx.arc(player.x + eyeOffset, player.y - 3, 3, 0, Math.PI * 2);
+        ctx.fill();
     }
 
-    function restartGame() {
-        health = 100;
-        relics = 0;
-        currentStep = 0;
-        document.getElementById('restart-btn').style.display = 'none';
-        updateUI();
-        loadStep(0);
+    function mainLoop() {
+        update();
+        draw();
+        requestAnimationFrame(mainLoop);
     }
 
-    // Start game on load
-    loadStep(0);
+    // --- QUIZ & PUZZLE INTERACTION ---
+    function openQuiz(altar) {
+        isPaused = true;
+        currentAltar = altar;
+
+        document.getElementById('quiz-modal').style.display = 'flex';
+        document.getElementById('quiz-question').innerText = altar.q;
+
+        const optionsBox = document.getElementById('quiz-options');
+        optionsBox.innerHTML = '';
+
+        altar.opts.forEach((optText, i) => {
+            const btn = document.createElement('button');
+            btn.className = 'quiz-btn';
+            btn.innerText = (i + 1) + '. ' + optText;
+            btn.onclick = () => submitAnswer(i);
+            optionsBox.appendChild(btn);
+        });
+    }
+
+    function submitAnswer(chosenIdx) {
+        if (chosenIdx === currentAltar.correct) {
+            currentAltar.active = false;
+            relicsFound++;
+            document.getElementById('relic-count').innerText = relicsFound + '/3';
+            alert("Riddle Solved! Ancient relic unlocked!");
+        } else {
+            player.hp = Math.max(0, player.hp - 30);
+            document.getElementById('hp-bar').style.width = (player.hp / player.maxHp * 100) + '%';
+            alert("Incorrect! Ancient curse inflicts 30 damage!");
+        }
+
+        document.getElementById('quiz-modal').style.display = 'none';
+        isPaused = false;
+    }
+
+    // Start Engine
+    mainLoop();
 </script>
 
 </body>
